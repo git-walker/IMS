@@ -1,7 +1,7 @@
-# qmis
+# ims
 
 #### 介绍
-guoxiangqmis
+yuhui ——毕设
 
 #### 软件架构
 软件架构说明
