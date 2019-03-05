@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.rad.modules.stafrock.dao.InvBasDocDao">
+    
+	<sql id="invBasDocColumns">
+		a.asset AS "asset",
+		a.discount AS "discount",
+		a.forinvname AS "forinvname",
+		a.graphid AS "graphid",
+		a.height AS "height",
+		a.invbarcode AS "invbarcode",
+		a.invcode AS "invcode",
+		a.invmnecode AS "invmnecode",
+		a.invname AS "invname",
+		a.invpinpai AS "invpinpai",
+		a.invshortname AS "invshortname",
+		a.invspec AS "invspec",
+		a.invtype AS "invtype",
+		a.laborflag AS "laborflag",
+		a.length AS "length",
+		a.memo AS "memo",
+		a.pk_corp AS "pkCorp",
+		a.pk_invcl AS "pkInvcl",
+		a.pk_measdoc AS "pkMeasdoc",
+		a.setpartsflag AS "setpartsflag",
+		a.unitvolume AS "unitvolume",
+		a.unitweight AS "unitweight",
+		a.width AS "width",
+		a.productline AS "productline",
+		a.taxitems AS "taxitems",
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		b.id AS "invmandocid",
+		b.invproperty AS "invproperty",
+		b.delmethod AS "delmethod",
+		b.dismodels AS "dismodels"
+	</sql>
+	
+	<sql id="invBasDocJoins">
+	</sql>
+    
+	<select id="get" resultType="InvBasDoc">
+		SELECT 
+			<include refid="invBasDocColumns"/>
+		FROM llm_invmandoc b join llm_invbasdoc a on a.id=b.pk_invbasdoc
+		<include refid="invBasDocJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findPage" resultType="InvBasDoc">
+		SELECT 
+			<include refid="invBasDocColumns"/>
+		FROM llm_invmandoc b join llm_invbasdoc a on a.id=b.pk_invbasdoc
+		<include refid="invBasDocJoins"/>
+
+            WHERE a.id = #{id}
+	</select>	
+
+	<select id="findList" resultType="InvBasDoc">
+		SELECT 
+			<include refid="invBasDocColumns"/>
+		FROM llm_invmandoc b join llm_invbasdoc a on a.id=b.pk_invbasdoc
+		<include refid="invBasDocJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="invcode != null and invcode != ''">
+				AND a.invcode = #{invcode}
+			</if>
+		    <if test="invname != null and invname != ''">
+			    AND invname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{invname}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{invname}, '%')</if>
+		    </if>			
+			<if test="invproperty != null and invproperty != ''">
+				AND b.invproperty = #{invproperty}
+			</if>
+			<if test="delmethod != null and delmethod != ''">
+				AND b.delmethod = #{delmethod}
+			</if>
+			<if test="dismodels != null and dismodels != ''">
+				AND b.dismodels = #{dismodels}
+			</if>			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO llm_invbasdoc(
+			asset,
+			discount,
+			forinvname,
+			graphid,
+			height,
+			invbarcode,
+			invcode,
+			invmnecode,
+			invname,
+			invpinpai,
+			invshortname,
+			invspec,
+			invtype,
+			laborflag,
+			length,
+			memo,
+			pk_corp,
+			pk_invcl,
+			pk_measdoc,
+			setpartsflag,
+			unitvolume,
+			unitweight,
+			width,
+			productline,
+			taxitems,
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			invproperty,
+			delmethod,
+			dismodels			
+		) VALUES (
+			#{asset},
+			#{discount},
+			#{forinvname},
+			#{graphid},
+			#{height},
+			#{invbarcode},
+			#{invcode},
+			#{invmnecode},
+			#{invname},
+			#{invpinpai},
+			#{invshortname},
+			#{invspec},
+			#{invtype},
+			#{laborflag},
+			#{length},
+			#{memo},
+			#{pkCorp},
+			#{pkInvcl},
+			#{pkMeasdoc},
+			#{setpartsflag},
+			#{unitvolume},
+			#{unitweight},
+			#{width},
+			#{productline},
+			#{taxitems},
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+            #{invproperty},
+			#{delmethod},
+			#{dismodels}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE llm_invmandoc SET 	
+			invproperty=#{invproperty},
+			delmethod=#{delmethod},
+			dismodels=#{dismodels}
+		WHERE id = #{invmandocid}
+	</update>
+	
+	<update id="delete">
+		UPDATE llm_invbasdoc SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

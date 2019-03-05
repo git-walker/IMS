@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+#load{
+	position:fixed; top: 0px; right:0px; bottom:0px;filter: alpha(opacity=60); background-color: #EEEEEE;
+	z-index: 1002; left: 0px; display:none;
+	opacity:0.5; -moz-opacity:0.5;padding-top:100px;color: #000000
+}

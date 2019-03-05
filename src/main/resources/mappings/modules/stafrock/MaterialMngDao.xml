@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.rad.modules.stafrock.dao.MaterialMngDao">
+    
+	<sql id="materialmngColumns">
+		a.asset AS "asset",
+		a.discount AS "discount",
+		a.forinvname AS "forinvname",
+		a.graphid AS "graphid",
+		a.height AS "height",
+		a.invbarcode AS "invbarcode",
+		a.invcode AS "invcode",
+		a.invmnecode AS "invmnecode",
+		a.invname AS "invname",
+		a.invpinpai AS "invpinpai",
+		a.invshortname AS "invshortname",
+		a.invspec AS "invspec",
+		a.invtype AS "invtype",
+		a.laborflag AS "laborflag",
+		a.length AS "length",
+		a.memo AS "memo",
+		a.pk_corp AS "pkCorp",
+		a.pk_invcl AS "pkInvcl",
+		a.pk_measdoc AS "pkMeasdoc",
+		a.setpartsflag AS "setpartsflag",
+		a.unitvolume AS "unitvolume",
+		a.unitweight AS "unitweight",
+		a.width AS "width",
+		a.productline AS "productline",
+		a.taxitems AS "taxitems",
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		m.id AS "measdoc.id",
+		m.measname AS "measdoc.measname",
+		l.id AS "invcl.id",
+		l.invclassname AS "invcl.invclassname",
+		b.serialmanaflag AS "serialmanaflag",
+        b.wholemanaflag  AS "wholemanaflag"
+	</sql>
+	
+	<sql id="materialmngJoins">
+	 left join llm_invmandoc b on a.id = b.pk_invbasdoc and b.del_flag='0'
+	 LEFT JOIN llm_measdoc m ON m.id=a.pk_measdoc
+	 LEFT JOIN llm_invcl l on l.id = a.pk_invcl
+	</sql>
+    
+	<select id="get" resultType="MaterialMng">
+		SELECT 
+			<include refid="materialmngColumns"/>
+		FROM llm_invbasdoc a
+		<include refid="materialmngJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MaterialMng">
+		SELECT 
+			<include refid="materialmngColumns"/>
+		FROM llm_invbasdoc a
+		<include refid="materialmngJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<if test="invcode != null and invcode != ''">
+			AND invcode LIKE 
+					<if test="dbName == 'oracle'">'%'||#{invcode}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{invcode}, '%')</if>
+		</if>
+		<if test="invname != null and invname != ''">
+			AND invname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{invname}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{invname}, '%')</if>
+		</if>
+		<if test="forinvname != null and forinvname != ''">
+			AND forinvname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{forinvname}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{forinvname}, '%')</if>
+		</if>
+		<if test="pkInvcl != null and pkInvcl != ''">
+			AND pk_invcl = #{pkInvcl}
+		</if>
+		<if test="invtype != null and invtype != ''">
+			AND invtype LIKE 
+					<if test="dbName == 'oracle'">'%'||#{invtype}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{invtype}, '%')</if>
+		</if>
+		<if test="serialmanaflag != null and serialmanaflag != ''">
+			AND b.serialmanaflag LIKE 
+					<if test="dbName == 'oracle'">'%'||#{serialmanaflag}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{serialmanaflag}, '%')</if>
+		</if>
+		<if test="wholemanaflag != null and wholemanaflag != ''">
+			AND b.wholemanaflag LIKE 
+					<if test="dbName == 'oracle'">'%'||#{wholemanaflag}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{wholemanaflag}, '%')</if>
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				
+			</otherwise>
+		</choose>		
+	</select>
+	<select id="checkValues" resultType="MaterialMng" parameterType="String">
+		SELECT 
+			<include refid="materialmngColumns"/>
+		FROM llm_invbasdoc a
+		<include refid="materialmngJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<insert id="insert">
+		INSERT INTO llm_invbasdoc(
+			asset,
+			discount,
+			forinvname,
+			graphid,
+			height,
+			invbarcode,
+			invcode,
+			invmnecode,
+			invname,
+			invpinpai,
+			invshortname,
+			invspec,
+			invtype,
+			laborflag,
+			length,
+			memo,
+			pk_corp,
+			pk_invcl,
+			pk_measdoc,
+			setpartsflag,
+			unitvolume,
+			unitweight,
+			width,
+			productline,
+			taxitems,
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{asset},
+			#{discount},
+			#{forinvname},
+			#{graphid},
+			#{height},
+			#{invbarcode},
+			#{invcode},
+			#{invmnecode},
+			#{invname},
+			#{invpinpai},
+			#{invshortname},
+			#{invspec},
+			#{invtype},
+			#{laborflag},
+			#{length},
+			#{memo},
+			#{pkCorp},
+			#{pkInvcl},
+			#{pkMeasdoc},
+			#{setpartsflag},
+			#{unitvolume},
+			#{unitweight},
+			#{width},
+			#{productline},
+			#{taxitems},
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE llm_invbasdoc SET 	
+			asset = #{asset},
+			discount = #{discount},
+			forinvname = #{forinvname},
+			graphid = #{graphid},
+			height = #{height},
+			invbarcode = #{invbarcode},
+			invcode = #{invcode},
+			invmnecode = #{invmnecode},
+			invname = #{invname},
+			invpinpai = #{invpinpai},
+			invshortname = #{invshortname},
+			invspec = #{invspec},
+			invtype = #{invtype},
+			laborflag = #{laborflag},
+			length = #{length},
+			memo = #{memo},
+			pk_corp = #{pkCorp},
+			pk_invcl = #{pkInvcl},
+			pk_measdoc = #{pkMeasdoc},
+			setpartsflag = #{setpartsflag},
+			unitvolume = #{unitvolume},
+			unitweight = #{unitweight},
+			width = #{width},
+			productline = #{productline},
+			taxitems = #{taxitems},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	<!-- 更新存货档案中的序列批次标志 -->
+	<update id="update2Flag">
+		UPDATE llm_invmandoc t
+   		SET pk_invbasdoc = #{id}
+   			<if test="wholemanaflag!=null and wholemanaflag!=''">
+   			,t.wholemanaflag  =#{wholemanaflag}
+   			</if>
+   			<if test="serialmanaflag!=null and serialmanaflag!=''">
+	        ,t.serialmanaflag =#{serialmanaflag}
+	       </if>
+ 		WHERE pk_invbasdoc = #{id} and del_flag='0'
+	</update>
+	<update id="delete">
+		UPDATE llm_invbasdoc SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<select id="findFlagList" resultType="java.util.HashMap" >
+		select 
+		t.value as "id",
+		t.label as "name" 
+		from sys_dict t 
+		where t.type = 'yes_no'
+	</select>	
+</mapper>

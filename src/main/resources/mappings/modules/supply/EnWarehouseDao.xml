@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.rad.modules.supply.dao.EnWarehouseDao">
+
+	<sql id="enWarehouseColumns">
+		ew.id,
+		ew.vbillcode,
+		ew.dbilldate,
+		ew.cwarehouseid,
+		ew.pk_calbody,
+		ew.cbiztype,
+		ew.cdispatcherid,
+		ew.cwhsmanagerid,
+		ew.cdptid,
+		ew.cbizid,
+		ew.cproviderid,
+		ew.vnote,
+		ew.boutretflag,
+		ew.freplenishflag,
+		ew.pk_corp,
+		ew.coperatorid,
+		ew.tmaketime,
+		ew.cregister,
+		ew.taccounttime,
+		ew.cbilltypecode,
+		ew.fbillflag,
+		ew.supplyemp,
+		ew.create_by AS "createBy.id",
+		ew.create_date,
+		ew.update_by AS "updateBy.id",
+		ew.update_date,
+		ew.remarks,
+		ew.del_flag
+		<if test="sd != null">
+			,
+			sd.id AS "sd.id",
+			sd.storcode AS "sd.storcode",
+			sd.storname AS "sd.storname",
+			sd.pk_reservoirid AS "sd.pkReservoirid"
+		</if>
+	</sql>
+	
+	<sql id="enWarehouseJoins">
+		<if test="sd != null">
+			JOIN llm_stordoc sd ON sd.id = ew.cwarehouseid
+			<if test="sd.delFlag != null and sd.delFlag != ''">
+				AND sd.del_flag = #{sd.delFlag}
+			</if>
+		</if>
+	</sql>
+	
+	<sql id="enWarehouseZColumns">
+		ewz.id,
+		ewz.pk_ewhid,
+		ewz.cinvbasid,
+		ewz.cinventoryid,
+		ewz.ninnum,
+		ewz.naccuminnum,
+		ewz.naccumactinnum,
+		ewz.flargess,
+		ewz.bsourcelargess,
+		ewz.dbizdate,
+		ewz.cfirstbillhid,
+		ewz.csourcebillhid,
+		ewz.cfirstbillbid,
+		ewz.csourcebillbid,
+		ewz.cprojectid,
+		ewz.crowno,
+		ewz.pk_stationid,
+		ewz.pk_cspaceid,
+		ewz.batchcode,
+		ewz.batchcodenum,
+		ewz.shelvesflag,
+		ewz.ninsumnum,
+		ewz.invstatus,
+		ewz.pk_stokeepid,
+		ewz.nprice,
+		ewz.nmoney,
+		ewz.create_by AS "createBy.id",
+		ewz.create_date,
+		ewz.update_by AS "updateBy.id",
+		ewz.update_date,
+		ewz.remarks,
+		ewz.del_flag
+		<if test="ibd != null">
+			,
+			ibd.id AS "ibd.id",
+			ibd.invcode AS "ibd.invcode",
+			ibd.invname AS "ibd.invname",
+			ibd.invspec AS "ibd.invspec",
+			ibd.invtype AS "ibd.invtype",
+			ibd.pk_measdoc AS "ibd.pkMeasdoc"
+			<if test="ibd.md != null">
+				,
+				md.id AS "ibd.md.id",
+				md.measname AS "ibd.md.measname"
+			</if>
+		</if>
+		<if test="kgy != null">
+			,
+			kgy.name AS "kgy.name"
+		</if>
+		<if test="sta != null">
+			,
+			sta.id AS "sta.id",
+			sta.gzzxbm AS "sta.gzzxbm",
+			sta.gzzxmc AS "sta.gzzxmc"
+		</if>
+		<if test="cd != null">
+			,
+			cd.id AS "cd.id",
+			cd.code AS "cd.code"
+		</if>
+	</sql>
+	
+	<sql id="enWarehouseZJoins">
+		<if test="ibd != null">
+			JOIN llm_invbasdoc ibd ON ibd.id = ewz.cinvbasid
+			<if test="ibd.delFlag != null and ibd.delFlag != ''">
+				AND ibd.del_flag = #{ibd.delFlag}
+			</if>
+			<if test="ibd.md != null">
+				LEFT JOIN 
+					(
+						SELECT 
+							id,
+							measname 
+						FROM llm_measdoc
+						WHERE 1 = 1
+						<if test="ibd.md.delFlag != null and ibd.md.delFlag != ''">
+							AND del_flag = #{ibd.md.delFlag}
+						</if>
+					) md 
+				ON md.id = ibd.pk_measdoc
+			</if>
+		</if>
+		<if test="kgy != null">
+			LEFT JOIN 
+				(
+					SELECT 
+						id,
+						name 
+					FROM sys_user
+					WHERE 1 = 1
+					<if test="kgy.delFlag != null and kgy.delFlag != ''">
+						AND del_flag = #{kgy.delFlag}
+					</if>
+				) kgy 
+			ON kgy.id = ewz.pk_stokeepid
+		</if>
+		<if test="sta != null">
+			LEFT JOIN 
+				(
+					SELECT 
+						id,
+						gzzxbm,
+						gzzxmc 
+					FROM llm_wk
+					WHERE 1 = 1
+					<if test="sta.delFlag != null and sta.delFlag != ''">
+						AND del_flag = #{sta.delFlag}
+					</if>
+				) sta 
+			ON sta.id = ewz.pk_stationid
+		</if>
+		<if test="cd != null">
+			LEFT JOIN 
+				(
+					SELECT 
+						id,
+						code 
+					FROM llm_cargdoc
+					WHERE 1 = 1
+					<if test="cd.delFlag != null and cd.delFlag != ''">
+						AND del_flag = #{cd.delFlag}
+					</if>
+				) cd 
+			ON cd.id = ewz.pk_cspaceid
+		</if>
+	</sql>
+
+	<!-- 插入主表 -->
+	<insert id="insert" parameterType="SupplyEnWarehouse">
+		INSERT INTO llm_enwarehouse(
+			id,
+			vbillcode,
+			dbilldate,
+			cwarehouseid,
+			pk_calbody,
+			cbiztype,
+			cdispatcherid,
+			cwhsmanagerid,
+			cdptid,
+			cbizid,
+			cproviderid,
+			vnote,
+			boutretflag,
+			freplenishflag,
+			pk_corp,
+			coperatorid,
+			tmaketime,
+			cregister,
+			taccounttime,
+			cbilltypecode,
+			fbillflag,
+			supplyemp,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{vbillcode},
+			#{dbilldate},
+			#{cwarehouseid},
+			#{pkCalbody},
+			#{cbiztype},
+			#{cdispatcherid},
+			#{cwhsmanagerid},
+			#{cdptid},
+			#{cbizid},
+			#{cproviderid},
+			#{vnote},
+			#{boutretflag},
+			#{freplenishflag},
+			#{pkCorp},
+			#{coperatorid},
+			#{tmaketime},
+			#{cregister},
+			#{taccounttime},
+			#{cbilltypecode},
+			#{fbillflag},
+			#{supplyemp},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 插入子表 -->
+	<insert id="insertChild" parameterType="SupplyEnWarehouseZ">
+		INSERT INTO llm_enwarehouse_z(
+			id,
+			pk_ewhid,
+			cinvbasid,
+			cinventoryid,
+			ninnum,
+			naccuminnum,
+			naccumactinnum,
+			flargess,
+			bsourcelargess,
+			dbizdate,
+			cfirstbillhid,
+			csourcebillhid,
+			cfirstbillbid,
+			csourcebillbid,
+			cprojectid,
+			crowno,
+			pk_stationid,
+			pk_cspaceid,
+			batchcode,
+			batchcodenum,
+			shelvesflag,
+			ninsumnum,
+			invstatus,
+			pk_stokeepid,
+			nprice,
+			nmoney,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{pkEwhid},
+			#{cinvbasid},
+			#{cinventoryid},
+			#{ninnum},
+			#{naccuminnum},
+			#{naccumactinnum},
+			#{flargess},
+			#{bsourcelargess},
+			#{dbizdate},
+			#{cfirstbillhid},
+			#{csourcebillhid},
+			#{cfirstbillbid},
+			#{csourcebillbid},
+			#{cprojectid},
+			#{crowno},
+			#{pkStationid},
+			#{pkCspaceid},
+			#{batchcode},
+			#{batchcodenum},
+			#{shelvesflag},
+			#{ninsumnum},
+			#{invstatus},
+			#{pkStokeepid},
+			#{nprice},
+			#{nmoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<select id="findList" parameterType="SupplyEnWarehouse" resultType="SupplyEnWarehouse">
+		SELECT 
+			<include refid="enWarehouseColumns"/>
+		FROM llm_enwarehouse ew
+		<include refid="enWarehouseJoins"/>
+		<where>
+			1 = 1
+			<if test="fbillflag != null and fbillflag != ''">
+				AND ew.fbillflag = #{fbillflag}
+			</if>
+			<if test="coperatorid != null and coperatorid != ''">
+				AND ew.coperatorid = #{coperatorid}
+			</if>
+			<if test="fbillflagList != null">
+				AND ew.fbillflag IN
+				<foreach collection="fbillflagList" index="index" item="item" open=" (" separator="," close=") ">
+					#{item}
+				</foreach>
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+				AND ew.del_flag = #{delFlag}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY ew.dbilldate DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findChildList" parameterType="SupplyEnWarehouseZ" resultType="SupplyEnWarehouseZ">
+		SELECT 
+			<include refid="enWarehouseZColumns"/>
+		FROM llm_enwarehouse_z ewz
+		<include refid="enWarehouseZJoins"/>
+		<where>
+			1 = 1
+			<if test="pkEwhid != null and pkEwhid != ''">
+				AND ewz.pk_ewhid = #{pkEwhid}
+			</if>
+			<if test="csourcebillhid != null and csourcebillhid != ''">
+				AND ewz.csourcebillhid = #{csourcebillhid}
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+				AND ewz.del_flag = #{delFlag}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY ewz.pk_stokeepid, ewz.cinventoryid
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findInfo" parameterType="SupplyEnWarehouse" resultType="SupplyEnWarehouse">
+		SELECT 
+			<include refid="enWarehouseColumns"/>
+		FROM llm_enwarehouse ew
+		<include refid="enWarehouseJoins"/>
+		<where>
+			ew.id = #{id}
+			<if test="fbillflag != null and fbillflag != ''">
+				AND ew.fbillflag = #{fbillflag}
+			</if>
+			<if test="coperatorid != null and coperatorid != ''">
+				AND ew.coperatorid = #{coperatorid}
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+				AND ew.del_flag = #{delFlag}
+			</if>
+		</where>
+	</select>
+	
+	<update id="update" parameterType="SupplyEnWarehouse">
+		UPDATE llm_enwarehouse SET 
+			<if test="fbillflag != null and fbillflag != ''">fbillflag = #{fbillflag},</if>
+			
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+			
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateChild" parameterType="SupplyEnWarehouseZ">
+		UPDATE llm_enwarehouse_z SET 	
+			<if test="ninnum != null">ninnum = #{ninnum},</if>
+			<if test="pkStationid != null and pkStationid != ''">pk_stationid = #{pkStationid},</if>
+			<if test="pkCspaceid != null and pkCspaceid != ''">pk_cspaceid = #{pkCspaceid},</if>
+			<if test="pkStokeepid != null and pkStokeepid != ''">pk_stokeepid = #{pkStokeepid},</if>
+			<if test="nmoney != null">nmoney = #{nmoney},</if>
+			<if test="shelvesflag != null and shelvesflag != ''">shelvesflag = #{shelvesflag},</if>
+
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="SupplyEnWarehouse">
+		UPDATE llm_enwarehouse SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteChild" parameterType="SupplyEnWarehouseZ">
+		UPDATE llm_enwarehouse_z SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

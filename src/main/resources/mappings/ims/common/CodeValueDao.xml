@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.common.dao.CodeValueDao">
+
+    <select id="findProjectList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id           "code",
+            t.invclassname "value",
+            t.invclasscode "param"
+        FROM llm_invcl t
+        WHERE INVCLASSCODE LIKE '921%'
+              AND length(t.invclasscode) > '3'
+              AND del_flag = 0
+        ORDER BY t.invclassname
+    </select>
+    <select id="findProjectGoingList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id           "code",
+            t.invclassname "value",
+            t.invclasscode "param"
+        FROM llm_invcl t
+        WHERE INVCLASSCODE LIKE '921%'
+              AND length(t.invclasscode) > '3'
+              AND sealdate IS NULL
+              AND del_flag = 0
+    </select>
+    <select id="findProjectListOrder" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id           "code",
+            t.invclassname "value",
+            t.invclasscode "param"
+        FROM llm_invcl t
+        WHERE INVCLASSCODE LIKE '921%'
+              AND sealdate IS NULL
+              AND del_flag = 0
+        ORDER BY t.invclassname
+    </select>
+    <select id="findProjectName" parameterType="String" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id           "code",
+            t.invclassname "value",
+            t.invclasscode "param"
+        FROM llm_invcl t
+        WHERE INVCLASSCODE LIKE '921%'
+              AND sealdate IS NULL
+              AND del_flag = 0
+              AND t.id = #{0}
+    </select>
+
+    <!--     <select id="findStationList" resultType="CodeValue">
+            select
+            DISTINCT s.id "code",
+            s.gzzxmc "value"
+            from
+            qmis_inspection_plan pl
+            inner join llm_wk s on s.id = pl.station_id
+
+            <choose>
+                <when test="projectId != null and projectId !=''">
+                    and pl.PROJECT_ID = #{projectId}
+                </when>
+                <otherwise>
+                    and 1 = 1
+                </otherwise>
+            </choose>
+            order by s.gzzxmc
+        </select> -->
+    <!-- 2017/12/22 修改添加工位后不显示问题-->
+    <select id="findStationList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            DISTINCT
+            s.id     "code",
+            s.gzzxmc "value"
+        FROM
+            llm_wk s
+        WHERE s.del_flag = '0'
+        ORDER BY s.gzzxmc
+    </select>
+    <select id="findStationList1" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            DISTINCT
+            s.id     "code",
+            s.gzzxmc "value"
+        FROM
+            llm_wk s
+        WHERE s.del_flag = '0'
+        ORDER BY s.gzzxmc
+    </select>
+
+    <select id="findWPList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        t.id "code",
+        t.name "value"
+        from lmm_wp t
+        where t.del_flag = '0'
+        <if test="stationId !=null and stationId !=''">
+            and t.station_id = #{stationId}
+        </if>
+        <if test="projectId !=null and projectId !=''">
+            and t.pk_project = #{projectId}
+        </if>
+    </select>
+
+    <select id="findTargetList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT b.id "code",
+        b.INVNAME "value",
+        b.invmnecode "param"
+        FROM LLM_INVBASDOC b
+        left join LLM_INVCL i on b.pk_invcl = i.id
+        WHERE b.del_flag ='0'
+        <if test="projectId != null and projectId != ''">
+            AND b.pk_invcl = #{projectId}
+        </if>
+    </select>
+
+
+    <select id="findToolList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id                                         "code",
+            CASE WHEN t.model IS NULL
+                THEN t.name
+            WHEN t.model IS NOT NULL
+                THEN t.name || '(' || t.model || ')' END "value"
+        FROM LMM_TOOL t
+        WHERE t.del_flag = 0
+    </select>
+
+    <select id="findUserList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            u.id                         "code",
+            u.name || '(' || u.no || ')' "value"
+        FROM sys_user u
+        WHERE u.del_flag = 0
+        ORDER BY name
+    </select>
+
+    <select id="findUserListByOffice" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        u.id "code",
+        u.name||'('||u.no||')' "value"
+        from sys_user u
+        WHERE u.del_flag = 0
+        <if test="code !=null and code !=''">
+            and u.office_id = #{code}
+        </if>
+        order by name
+    </select>
+
+    <select id="findPointByTask" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            p.id   "code",
+            p.name "value"
+        FROM qmis_inspection_task_point tp
+            LEFT JOIN qmis_inspection_point p ON tp.point_id = p.id
+        WHERE tp.task_id = #{param}
+    </select>
+
+    <select id="findProviderList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id       "code",
+            t.custname "value",
+            t.custcode "param"
+        FROM LLM_CUBASDOC t
+    </select>
+
+    <select id="findGroupByPlan" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            g.id        "code",
+            g.name      "value",
+            g.frequency "param"
+        FROM qmis_inspection_group g
+        WHERE g.ins_plan_id = #{param}
+    </select>
+
+    <select id="findStationByList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            DISTINCT
+            wk.id     "code",
+            wk.gzzxmc "value"
+        FROM qmis_inspection_plan plan
+            LEFT JOIN llm_wk wk ON wk.id = plan.station_id
+            LEFT JOIN llm_invcl invcl ON invcl.id = plan.project_id
+        WHERE invcl.id = #{param}
+              AND invcl.del_flag = '0'
+        ORDER BY wk.gzzxmc
+    </select>
+
+    <select id="findPointByList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        distinct point.id "code",
+        point.name "value"
+        from qmis_inspection_point point
+        inner join qmis_inspection_plan plan on plan.id = point.ins_plan_id
+        inner join qmis_inspection_group g on g.id = point.group_id
+        left join llm_wk s on s.id = plan.station_id
+        left join llm_invcl i on i.id = plan.project_id
+        left join lmm_tool t on t.id = point.inspection_tool_id
+        left join sys_dict dt on dt.value = point.inspection_type and dt.type = 'inspection_type'
+        where point.del_flag ='0' and plan.del_flag='0'
+        and i.invclasscode like '921%'
+        and point.del_flag = '0'
+
+        <if test="project !=null and project !=''">
+            and plan.project_id = #{project}
+        </if>
+        <if test="param !=null and param !=''">
+            and plan.station_id = #{param}
+        </if>
+        order by point.name
+
+    </select>
+
+    <select id="findQualityList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            q.id   AS code,
+            q.name AS param
+        FROM qmis_quality_plan q
+            INNER JOIN llm_invcl invcl ON invcl.id = q.project_id
+        WHERE invcl.invclasscode LIKE '921%'
+              AND q.del_flag = 0
+              AND q.type = 'L'
+    </select>
+
+    <select id="findControlList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            c.id   AS code,
+            c.name AS param
+        FROM qmis_control_plan c
+            LEFT JOIN llm_invcl invcl ON invcl.id = c.project_id
+            LEFT JOIN qmis_quality_plan q ON q.id = c.quality_id
+        WHERE invcl.invclasscode LIKE '921%'
+              AND c.del_flag = 0
+              AND c.type = 'L'
+    </select>
+
+    <select id="findUserByPointId" parameterType="String" resultType="cn.rootyu.rad.modules.sys.entity.User">
+        SELECT
+            u.id,
+            u.login_name "loginName"
+        FROM qmis_inspection_point point
+            INNER JOIN qmis_inspection_plan p ON p.id = point.ins_plan_id
+            INNER JOIN sys_user u ON p.duty_user_id = u.id
+        WHERE point.id = #{0}
+    </select>
+    <select id="userByRole" parameterType="String" resultType="cn.rootyu.rad.modules.sys.entity.User">
+        SELECT
+            a.id,
+            a.name       "name",
+            a.login_name "loginName"
+        FROM SYS_USER a
+            INNER JOIN SYS_USER_ROLE b ON a.id = b.user_id
+            INNER JOIN SYS_ROLE c ON c.id = b.role_id
+        WHERE c.id = #{0}
+    </select>
+    <select id="roleByUser" parameterType="String" resultType="String">
+        SELECT a.id
+        FROM SYS_ROLE a
+            INNER JOIN SYS_USER_ROLE b
+                ON a.id = b.role_id
+            INNER JOIN SYS_USER c
+                ON c.id = b.user_id
+        WHERE c.id = #{0}
+              AND a.del_flag = '0'
+    </select>
+    <select id="findRoleList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            u.id   "code",
+            u.name "value"
+        FROM sys_role u
+        WHERE u.del_flag = 0
+        ORDER BY name
+    </select>
+    <select id="findUserName" parameterType="String" resultType="java.lang.String">
+        SELECT u.name "value"
+        FROM sys_user u
+        WHERE u.id = #{0}
+    </select>
+
+    <select id="findTaskStatusList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.value "code",
+            t.label "value"
+        FROM sys_dict t
+        WHERE t.type = 'task_status'
+    </select>
+
+    <select id="findUserById" parameterType="String" resultType="cn.rootyu.rad.modules.sys.entity.User">
+        SELECT
+            u.id         "id",
+            u.login_name "loginName",
+            u.name       "name"
+        FROM sys_user u
+        WHERE u.id = #{1}
+    </select>
+
+    <select id="findUserListByRole" resultType="cn.rootyu.ims.common.entity.CodeValue" parameterType="String">
+        SELECT
+            u.id                         "code",
+            u.name || '(' || u.no || ')' "value"
+        FROM SYS_user u
+            LEFT JOIN sys_user_role ur
+                ON u.id = ur.user_id
+            LEFT JOIN sys_role r
+                ON r.id = ur.role_id
+        WHERE r.id = #{1}
+    </select>
+
+    <select id="findUserListByStation" resultType="cn.rootyu.rad.modules.sys.entity.User" parameterType="String">
+        SELECT
+            u.id         "id",
+            u.login_name "loginName"
+        FROM sys_user u
+            LEFT JOIN qmis_bas_user_station q
+                ON q.user_id = u.id
+        WHERE q.station_id = #{1}
+    </select>
+
+    <select id="findOfficeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            t.id   "code",
+            t.name "value"
+        FROM SYS_OFFICE t
+        WHERE t.id != 'd09c06c67c124a2683b659bafec4a97b'
+        AND  t.del_flag = '0'
+    </select>
+    <select id="findUserByOffice" resultType="cn.rootyu.ims.common.entity.CodeValue" parameterType="String">
+        SELECT
+            t.id   "code",
+            t.name "value"
+        FROM SYS_USER t
+            LEFT JOIN sys_office s
+                ON t.office_id = s.id
+            LEFT JOIN sys_user_role ur
+                ON t.id = ur.user_id
+            LEFT JOIN sys_role r
+                ON r.id = ur.role_id
+        WHERE s.id = #{0} AND r.id = 'f7b412b848d24872bd8b4d51c513422e'
+    </select>
+    <select id="findOfficeByUser" resultType="cn.rootyu.ims.common.entity.CodeValue" parameterType="String">
+        SELECT
+            s.id   "code",
+            s.name "value"
+        FROM SYS_USER t
+            LEFT JOIN sys_office s
+                ON t.office_id = s.id
+        WHERE t.id = #{0}
+    </select>
+    <select id="findOfficeById" resultType="cn.rootyu.ims.common.entity.CodeValue" parameterType="String">
+        SELECT
+            t.id   "code",
+            t.name "value"
+        FROM sys_office t
+        WHERE t.id = #{1}
+    </select>
+
+    <select id="findPlanList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select p.id "code",
+        i.INVCLASSNAME ||','|| w.GZZXMC || ',' || p.NAME "value"
+        from QMIS_INSPECTION_PLAN p
+        left join LLM_INVCL i on i.ID = p.PROJECT_ID
+        left join llm_wk w on w.id = p.STATION_ID
+        where p.DEL_FLAG = '0'
+        <if test="projectId != null and projectId !=''">
+            and p.PROJECT_ID=#{projectId}
+        </if>
+    </select>
+    <select id="findSystemList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            s.id    "code",
+            s.LABEL "value"
+        FROM sys_dict s
+        WHERE s.DEL_FLAG = '0'
+              AND s.type = 'project_class'
+    </select>
+    <select id="findUserByRole" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            a.id                         "code",
+            a.name || '(' || a.no || ')' "value"
+        FROM SYS_USER a
+            INNER JOIN SYS_USER_ROLE b ON a.id = b.user_id
+            INNER JOIN SYS_ROLE c ON c.id = b.role_id
+        WHERE c.id = #{0}
+    </select>
+    <select id="findUserByRoleEnName" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+            a.id                         "code",
+            a.name || '(' || a.no || ')' "value"
+        FROM SYS_USER a
+            INNER JOIN SYS_USER_ROLE b ON a.id = b.user_id
+            INNER JOIN SYS_ROLE c ON c.id = b.role_id
+        WHERE a.DEL_FLAG = '0' AND c.ENNAME = #{0}
+    </select>
+
+    <select id="getDictList" resultType="cn.rootyu.ims.common.entity.CodeValue" parameterType="String">
+        SELECT
+            t.value "code",
+            t.label "value"
+        FROM SYS_Dict t
+        WHERE t.type = #{0}
+        ORDER BY t.sort
+    </select>
+
+    <select id="findQueuingTypeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select 
+            t.id "code",
+            t.name "value"
+        from QMIS_QUEUING_TYPE t
+        order by seq
+    </select>
+    <select id="findUnitList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        t.id "code",
+        t.spl_name "value"
+        from QMIS_BAS_SUPPLIER_INFO t
+        <if test="code!=null and code!='' and code!='100'.toString()">
+            where t.BEL_FLAG = #{code}
+        </if>
+
+    </select>
+    <select id="findUser" resultType="cn.rootyu.ims.common.entity.CodeValue">
+          select
+              t.id "code",
+              t.name "value"
+          from SYS_USER t
+          where t.del_flag = '0'
+    </select>
+    <select id="getProjectView" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        count(v.id) "code", v.param "param",v.labzz "value"
+        from
+        (select t.id,
+        t.status as param,
+        <choose>
+            <when test="search == '1'.toString()">
+                li.invclassname as labzz
+            </when>
+            <when test="search == '2'.toString()">
+                lw.gzzxbm as labzz
+            </when>
+            <when test="search == '3'.toString()">
+                to_char(t.CREATE_DATE,'YYYY-MM-W')||' 星期' as labzz
+            </when>
+            <otherwise>
+                li.invclassname as labzz
+            </otherwise>
+        </choose>
+        from qmis_ncr_report_info t
+        left join llm_invcl li on t.project_id = li.id
+        left join llm_wk lw on t.station_id = lw.id
+        where 'labzz' is not null
+        <if test="projectId!=null and projectId!=''">
+            and t.project_id=#{projectId}
+        </if>
+        <if test="stationId!=null and stationId!=''">
+            and t.station_id=#{stationId}
+        </if>
+        <if test="status!=null and status!=''">
+            and t.status in (${status})
+        </if>
+        <if test="beginDate!=null and beginDate!=''">
+            and t.CREATE_DATE &gt;= #{beginDate}
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            and t.CREATE_DATE &lt;= #{endDate}
+        </if>
+        ) v
+        group by v.labzz,v.param
+        order by v.labzz,v.param
+    </select>
+    <select id="jobTypeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+         select
+             t.id "code",
+             t.param "param",
+             t.name "value"
+         from QMIS_JOB_TYPE t
+         order by seq
+        
+    </select>
+    <select id="getQueuingCodeListByJob" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select * from ((select
+        t.id "code",
+        t.code "value"
+        from QMIS_QUEUING_REPORT t
+        left join QMIS_QUEUING_TYPE p ON p.id=t.type_id
+        where
+        p.type='1'
+        and t.duty_user = #{dutyUser}
+        and t.del_flag = '0'
+        and t.status = '0')
+        minus (select
+        p.id,
+        r.act_code
+        from QMIS_JOB_REPORT r
+        left join QMIS_QUEUING_REPORT p on p.id=r.queuing_id
+        where r.del_flag='0' and p.del_flag='0'
+        <if test="id!=null and id!=''">
+            and r.id != #{id}
+        </if>
+        )) z
+        order by "value"
+    </select>
+
+    <select id="findMeetCodeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select * from ((select
+          t.code "value"
+        from QMIS_QUEUING_REPORT t
+        left join QMIS_QUEUING_TYPE p ON p.id=t.type_id
+        where
+          p.type='2' and t.status = '0' and t.duty_user = #{dutyUser} and t.del_flag = '0')
+        minus (select j.meet_Code "value"
+              from QMIS_job_REPORT j
+              where j.del_flag = '0')) z
+        order by "value"
+    </select>
+
+    <select id="findZgCodeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+          t.id "code",
+          t.code "value"
+           from QMIS_QUEUING_REPORT t
+        left join QMIS_QUEUING_TYPE p ON p.id=t.type_id
+        where
+          p.type='3' and (
+          t.workshop_Id = #{workshopId}
+          or t.unit_Id = #{unitId}
+          ) and t.del_flag='0'
+        order by t.code
+
+    </select>
+
+    <select id="findTypeList" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+           t.id "code",
+           t.spl_name "value"
+           FROM QMIS_BAS_SUPPLIER_INFO t
+           where t.del_flag = '0'
+    </select>
+
+    <!--内外部单位-->
+    <select id="getResponUnitNamePage" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        (SELECT
+        t.id AS "code",
+        cast(t.spl_name AS varchar2(200)) "value"
+        FROM QMIS_BAS_SUPPLIER_INFO t
+        WHERE t.DEL_FLAG = '0'
+        <if test="message!=null and message!=''">
+            AND t.spl_name LIKE '%'||#{message}||'%'
+        </if>
+        ) union all (
+        SELECT
+        o.id AS "code",
+        cast(o.name AS varchar2(200)) "value"
+        FROM SYS_OFFICE o
+        WHERE o.DEL_FLAG = '0'
+        <if test="message!=null and message!=''">
+            AND o.NAME LIKE '%'||#{message}||'%'
+        </if>
+        )
+    </select>
+    <!--内部单位-->
+    <select id="getInnerUnitNamePage" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        SELECT
+        o.id AS "code",
+        cast(o.name AS varchar2(200)) "value"
+        FROM SYS_OFFICE o
+        WHERE o.DEL_FLAG = '0'
+        <if test="message!=null and message!=''">
+            AND o.NAME LIKE '%'||#{message}||'%'
+        </if>
+    </select>
+    <select id="getCheckPersonPage" resultType="cn.rootyu.ims.common.entity.CodeValue">
+        select
+        t.id "code",
+        t.name||'('||t.LOGIN_NAME||')' "value"
+        from SYS_USER t where t.DEL_FLAG = '0'
+        <if test="message!=null and message!=''">
+            AND t.name||'('||t.LOGIN_NAME||')' LIKE '%'||#{message}||'%'
+        </if>
+    </select>
+
+</mapper>
