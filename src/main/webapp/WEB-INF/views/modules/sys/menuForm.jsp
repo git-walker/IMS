@@ -37,8 +37,14 @@
 		<div class="form-group">
 			<label class="control-label col-xs-12 col-sm-2 no-padding" for="icon">图标:</label>
 			<div class="col-xs-12 col-sm-10">
-				<div class="clearfix">
-					<form:input path="icon" htmlEscape="false" maxlength="50" class="form-control width-100" placeholder="请输入图标名称"/> 
+				<div class="clearfix check-out input-group">
+					<form:input type="text" path="icon" class="form-control" placeholder="请选择一个图标"/>
+					<span class="input-group-btn">
+						<button type="button" id="selectIconMenu" class="btn btn-purple btn-sm">
+							<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+							图标选择
+						</button>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -113,3 +119,4 @@
 		<div id="treeview" class="" data-id="" data-text=""></div>
 	</div>
 </div>
+<div id="selectIconDiv" class="hide widget-body"></div>

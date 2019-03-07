@@ -4,8 +4,6 @@
 package cn.rootyu.rad.common.persistence;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.supcan.annotation.treelist.SupTreeList;
-import cn.rootyu.rad.common.supcan.annotation.treelist.cols.SupCol;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
@@ -22,7 +20,7 @@ import java.util.Map;
  * @author DHC
  * @version 2014-05-16
  */
-@SupTreeList
+
 public abstract class BaseEntity<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -62,7 +60,6 @@ public abstract class BaseEntity<T> implements Serializable {
 		this.id = id;
 	}
 
-	@SupCol(isUnique="true", isHide="true")
 	public String getId() {
 		return id;
 	}

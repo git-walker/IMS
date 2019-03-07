@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter"%>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
@@ -15,10 +14,7 @@
 						<div class="center">
 							<h1>
 								<img alt="" src="${pageContext.request.contextPath}/static/images/logo.png"/>
-								<!-- <span class="red">L2M 精益物流</span> -->
-								<!-- <span class="white" id="id-text2">精益物流</span> -->
 							</h1>
-							<!-- <h4 class="blue" id="id-company-text">精益物流&copy; 2015-2016</h4> -->
 						</div>
 
 						<div class="space-6"></div>
@@ -38,7 +34,7 @@
 											<fieldset>
 												<label class="block clearfix">
 													<span class="block input-icon input-icon-right">
-														<input type="text" id="username" name="username" class="form-control" placeholder="用户名" value="thinkgem"/>
+														<input type="text" id="username" name="username" class="form-control" placeholder="用户名" value="admin"/>
 														<i class="ace-icon fa fa-user"></i>
 													</span>
 												</label>

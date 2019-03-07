@@ -7,12 +7,10 @@ import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.servlet.ValidateCodeServlet;
 import cn.rootyu.rad.common.utils.Encodes;
 import cn.rootyu.rad.common.utils.SpringContextHolder;
-import cn.rootyu.rad.common.web.Servlets;
 import cn.rootyu.rad.modules.sys.entity.Menu;
 import cn.rootyu.rad.modules.sys.entity.Role;
 import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.service.SystemService;
-import cn.rootyu.rad.modules.sys.utils.LogUtils;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
 import cn.rootyu.rad.modules.sys.web.LoginController;
 import org.apache.commons.lang3.StringUtils;
@@ -129,7 +127,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			// 更新登录IP和时间
 			getSystemService().updateUserLoginInfo(user);
 			// 记录登录日志
-			LogUtils.saveLog(Servlets.getRequest(), "系统登录");
+//			LogUtils.saveLog(Servlets.getRequest(), "系统登录");
 			return info;
 		} else {
 			return null;

@@ -3,6 +3,7 @@
  */
 package cn.rootyu.rad.modules.sys.web;
 
+import cn.rootyu.ims.common.dao.CodeValueDao;
 import cn.rootyu.rad.common.beanvalidator.BeanValidators;
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.persistence.Page;
@@ -10,15 +11,16 @@ import cn.rootyu.rad.common.utils.DateUtils;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.utils.excel.ExportExcel;
 import cn.rootyu.rad.common.utils.excel.ImportExcel;
-import cn.rootyu.rad.common.utils.jqgridSearch.JqGridHandler;
 import cn.rootyu.rad.common.web.BaseController;
 import cn.rootyu.rad.common.web.Servlets;
 import cn.rootyu.rad.modules.sys.dao.UserDao;
-import cn.rootyu.rad.modules.sys.entity.*;
+import cn.rootyu.rad.modules.sys.entity.Menu;
+import cn.rootyu.rad.modules.sys.entity.Office;
+import cn.rootyu.rad.modules.sys.entity.Role;
+import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.service.SystemService;
 import cn.rootyu.rad.modules.sys.utils.PhotoUtils;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
-import cn.rootyu.ims.common.dao.CodeValueDao;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -33,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +55,6 @@ public class UserController extends BaseController {
 	private UserDao userDao;
 	@Autowired
 	private SystemService systemService;
-//	@Autowired
-//	private InquireTaskService inquireTaskService;
 	@Autowired
 	private CodeValueDao codeValueDao;
 	
@@ -86,8 +85,6 @@ public class UserController extends BaseController {
 	@RequestMapping(value = {"searchPage"})
 	@ResponseBody
 	public Map<String,Object> searchPage(User user, HttpServletRequest request, HttpServletResponse response) {
-		String where = new JqGridHandler(request).getWheres(null, true);
-		System.out.println("sql:"+where);
 		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		returnMap.put("total", page.getTotalPage());
@@ -519,9 +516,7 @@ public class UserController extends BaseController {
 	public String info(User user, HttpServletResponse response, Model model) {
 		User currentUser = UserUtils.getUser();
 		List<Menu> menuList = systemService.getMenuListByUser(currentUser.getId());
-    	String unReadNotifys = systemService.unReadNotifyCount(Notify.READ_FLAG_NO);
     	model.addAttribute("menuList", menuList);
-		model.addAttribute("unReadNotifys", unReadNotifys);
 		model.addAttribute("user", currentUser);
 		model.addAttribute("Global", new Global());
 		return "modules/sys/userInfo";
@@ -703,10 +698,6 @@ public class UserController extends BaseController {
 		
 		systemService.initUserPassword();	
 		return "";
-	}
-	public static void main(String[] args) throws UnsupportedEncodingException {
-		
-		System.out.println(URLEncoder.encode("chrome_installer(32)", "UTF-8"));
 	}
 	//下载
 	@ResponseBody

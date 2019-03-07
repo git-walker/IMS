@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _GetMessageResponse_QNAME = new QName("http://service.webService.ims.dhc.com/", "getMessageResponse");
-    private final static QName _GetMessage_QNAME = new QName("http://service.webService.ims.dhc.com/", "getMessage");
+    private final static QName _GetMessageResponse_QNAME = new QName("http://service.webService.ims.rootyu.cn/", "getMessageResponse");
+    private final static QName _GetMessage_QNAME = new QName("http://service.webService.ims.rootyu.cn/", "getMessage");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.dhc.ims.webService.client
@@ -54,7 +54,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link GetMessageResponse }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://service.webService.ims.dhc.com/", name = "getMessageResponse")
+    @XmlElementDecl(namespace = "http://service.webService.ims.rootyu.cn/", name = "getMessageResponse")
     public JAXBElement<GetMessageResponse> createGetMessageResponse(GetMessageResponse value) {
         return new JAXBElement<GetMessageResponse>(_GetMessageResponse_QNAME, GetMessageResponse.class, null, value);
     }
@@ -63,7 +63,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link GetMessage }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://service.webService.ims.dhc.com/", name = "getMessage")
+    @XmlElementDecl(namespace = "http://service.webService.ims.rootyu.cn/", name = "getMessage")
     public JAXBElement<GetMessage> createGetMessage(GetMessage value) {
         return new JAXBElement<GetMessage>(_GetMessage_QNAME, GetMessage.class, null, value);
     }

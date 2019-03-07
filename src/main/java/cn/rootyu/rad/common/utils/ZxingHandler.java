@@ -125,38 +125,5 @@ public class ZxingHandler {
 		}
 		return null;
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		// 条形码
-		String imgPath = "target\\zxing_EAN13.png";
-		String contents = "6923450657713";
-		int width = 105, height = 50;
-		
-		ZxingHandler.encode(contents, width, height, imgPath);
-		System.out.println("finished zxing EAN-13 encode.");
-
-		String decodeContent = ZxingHandler.decode(imgPath);
-		System.out.println("解码内容如下：" + decodeContent);
-		System.out.println("finished zxing EAN-13 decode.");
-		
-		// 二维码
-		String imgPath2 = "target\\zxing.png";
-		String contents2 = "Hello Gem, welcome to Zxing!"
-				+ "\nBlog [ http://thinkgem.iteye.com ]"
-				+ "\nEMail [ thinkgem@163.com ]";
-		int width2 = 300, height2 = 300;
-
-		ZxingHandler.encode2(contents2, width2, height2, imgPath2);
-		System.out.println("finished zxing encode.");
-
-		String decodeContent2 = ZxingHandler.decode2(imgPath2);
-		System.out.println("解码内容如下：" + decodeContent2);
-		System.out.println("finished zxing decode.");
-		
-	}
     
 }

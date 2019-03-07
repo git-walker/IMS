@@ -6,7 +6,6 @@ package cn.rootyu.rad.modules.sys.interceptor;
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.service.BaseService;
 import cn.rootyu.rad.common.utils.DateUtils;
-import cn.rootyu.rad.modules.sys.utils.LogUtils;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -52,7 +51,7 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 		// 保存日志
 		String uri = request.getContextPath()+ Global.getAdminPath()+"/sys/notify/count";
 		if(!request.getRequestURI().equals(uri)){
-			LogUtils.saveLog(request, handler, ex, null);
+//			LogUtils.saveLog(request, handler, ex, null);
 		
 			// 打印JVM信息。
 			if (logger.isDebugEnabled()){

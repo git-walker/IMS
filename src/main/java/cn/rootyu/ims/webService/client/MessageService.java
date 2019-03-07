@@ -14,14 +14,14 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 3.0.2
  * 
  */
-@WebService(targetNamespace = "http://service.webService.ims.dhc.com/", name = "MessageService")
+@WebService(targetNamespace = "http://service.webService.ims.rootyu.cn/", name = "MessageService")
 @XmlSeeAlso({ObjectFactory.class})
 public interface MessageService {
 
     @WebResult(name = "return", targetNamespace = "")
-    @RequestWrapper(localName = "getMessage", targetNamespace = "http://service.webService.ims.dhc.com/", className = "GetMessage")
+    @RequestWrapper(localName = "getMessage", targetNamespace = "http://service.webService.ims.rootyu.cn/", className = "GetMessage")
     @WebMethod
-    @ResponseWrapper(localName = "getMessageResponse", targetNamespace = "http://service.webService.ims.dhc.com/", className = "GetMessageResponse")
+    @ResponseWrapper(localName = "getMessageResponse", targetNamespace = "http://service.webService.ims.rootyu.cn/", className = "GetMessageResponse")
     public String getMessage(
             @WebParam(name = "text", targetNamespace = "")
                     String text

@@ -200,6 +200,36 @@
 									}
 								});
 							});
+                            $("#selectIconMenu").on('click', function (e) {
+                                e.preventDefault();
+
+                                $.post('${ctx}/sys/menu/iconselect', {}, function (data, textStatus, object) {
+                                    var $selectIconDiv = $("#selectIconDiv");
+                                    $selectIconDiv.html(object.responseText).removeClass('hide').dialog({
+                                        modal: true,
+                                        width: 1000,
+                                        height: 618,
+                                        title: "<div class='widget-header widget-header-small widget-header-flat'><h4 class='smaller'><i class='ace-icon fa fa-key'></i>&nbsp;图标选择</h4></div>",
+                                        title_html: true,
+                                        buttons: [
+                                            {
+                                                text: "取消",
+                                                "class": "btn btn-minier",
+                                                click: function () {
+                                                    $(this).dialog("destroy");
+                                                }
+                                            }
+                                        ],
+                                        open: function (event, ui) {
+                                            $("#icons .fa-hover a").dblclick(function () {
+                                                var icon = $(this).find('i').attr('class');
+                                                $("#icon").val(icon);
+                                                $selectIconDiv.dialog("close");
+                                            });
+                                        }
+                                    });
+                                });
+                            });
 						}
 					});
 

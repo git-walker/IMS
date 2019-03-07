@@ -6,7 +6,6 @@ package cn.rootyu.rad.modules.sys.web;
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.persistence.Page;
 import cn.rootyu.rad.common.utils.StringUtils;
-import cn.rootyu.rad.common.utils.jqgridSearch.JqGridHandler;
 import cn.rootyu.rad.common.web.BaseController;
 import cn.rootyu.rad.modules.sys.entity.Dict;
 import cn.rootyu.rad.modules.sys.service.DictService;
@@ -61,8 +60,6 @@ public class DictController extends BaseController {
 	@RequestMapping(value = {"searchPage"})
 	@ResponseBody
 	public Map<String,Object> searchPage(Dict dict, HttpServletRequest request, HttpServletResponse response) {
-		String where = new JqGridHandler(request).getWheres(null, true);
-		System.out.println("sql:　　　　　　"+where);
         Page<Dict> page = dictService.findPage(new Page<Dict>(request, response),dict);
         Map<String,Object> returnMap = new HashMap<String,Object>();
         returnMap.put("total", page.getTotalPage());

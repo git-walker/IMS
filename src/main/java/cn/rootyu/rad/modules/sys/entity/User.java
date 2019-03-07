@@ -5,7 +5,6 @@ package cn.rootyu.rad.modules.sys.entity;
 
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.persistence.DataEntity;
-import cn.rootyu.rad.common.supcan.annotation.treelist.cols.SupCol;
 import cn.rootyu.rad.common.utils.Collections3;
 import cn.rootyu.rad.common.utils.excel.annotation.ExcelField;
 import cn.rootyu.rad.common.utils.excel.fieldtype.RoleListType;
@@ -97,7 +96,7 @@ public class User extends DataEntity<User> {
 		this.loginFlag = loginFlag;
 	}
 
-	@SupCol(isUnique="true", isHide="true")
+
 	@ExcelField(title="ID", type=1, align=2, sort=1)
 	public String getId() {
 		return id;

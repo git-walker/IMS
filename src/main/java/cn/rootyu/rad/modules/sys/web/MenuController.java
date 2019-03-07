@@ -172,6 +172,13 @@ public class MenuController extends BaseController {
 		model.addAttribute("parentId", parentId);
 		return "modules/sys/menuTreeselect";
 	}
+
+	@RequiresPermissions("user")
+	@RequestMapping(value = "iconselect")
+	public String iconselect(Model model) {
+
+		return "modules/sys/iconSelect";
+	}
 	
 	/**
 	 * 批量修改菜单排序
