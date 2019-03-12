@@ -73,12 +73,6 @@
 										修改密码
 									</a>
 								</li>
-								<li>
-									<a href="#page/sys/notify">
-										<i class="ace-icon fa fa-bell"></i>
-										我的通知
-									</a>
-								</li>
 								<li class="divider"></li>
 								<li>
 									<a href="${ctx}/logout" title="退出登录">
@@ -354,8 +348,8 @@
 		    <div class="footer-inner">
 		        <div class="footer-content">
 					<span class="bigger-120">
-						<span class="blue bolder">L2M</span>
-						精益物流 © 2015-2016
+						<span class="blue bolder">IMS</span>
+						进销存管理系统 © 2018-2019
 					</span>
 		        </div>
 		    </div>
