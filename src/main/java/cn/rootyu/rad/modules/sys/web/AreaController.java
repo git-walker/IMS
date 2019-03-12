@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 区域Controller
- * @author DHC
- * @version 2013-5-15
+ * @ClassName AreaController
+ * @Description 区域选择Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:40
+ * @Version 1.0
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/area")

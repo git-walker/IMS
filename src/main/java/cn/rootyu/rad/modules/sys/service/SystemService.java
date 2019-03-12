@@ -14,12 +14,11 @@ import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.modules.sys.dao.MenuDao;
 import cn.rootyu.rad.modules.sys.dao.RoleDao;
 import cn.rootyu.rad.modules.sys.dao.UserDao;
-import cn.rootyu.rad.modules.sys.entity.*;
-import cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm;
+import cn.rootyu.rad.modules.sys.entity.Menu;
+import cn.rootyu.rad.modules.sys.entity.Office;
+import cn.rootyu.rad.modules.sys.entity.Role;
+import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
-import cn.rootyu.rad.common.utils.ConstantUtils.MenuProcess;
-import com.google.common.collect.Lists;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,11 +50,7 @@ public class SystemService extends BaseService {
 	private MenuDao menuDao;
 	@Autowired
 	private SessionDAO sessionDao;
-	@Autowired
-	private SystemAuthorizingRealm systemRealm;
 
-//	@Autowired
-//	private InquireTaskService inquireTaskService;
 	
 	public SessionDAO getSessionDao() {
 		return sessionDao;
@@ -279,7 +274,7 @@ public class SystemService extends BaseService {
 //		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
 		UserUtils.clearCache();
 //		// 清除权限缓存
-		systemRealm.clearAllCachedAuthorizationInfo();
+//		systemRealm.clearAllCachedAuthorizationInfo();
 	}
 	
 	@Transactional(readOnly = false)
@@ -295,7 +290,7 @@ public class SystemService extends BaseService {
 //		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
 		UserUtils.clearCache();
 //		// 清除权限缓存
-		systemRealm.clearAllCachedAuthorizationInfo();
+//		systemRealm.clearAllCachedAuthorizationInfo();
 	}
 	
 	@Transactional(readOnly = false)
@@ -309,7 +304,7 @@ public class SystemService extends BaseService {
 //		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
 		UserUtils.clearCache();
 //		// 清除权限缓存
-		systemRealm.clearAllCachedAuthorizationInfo();
+//		systemRealm.clearAllCachedAuthorizationInfo();
 	}
 
 	@Transactional(readOnly = false)
@@ -450,55 +445,55 @@ public class SystemService extends BaseService {
 	 * @param id
 	 * @return
 	 */
-	public List<Menu> getMenuListByUser(String id){
-
-		List<Menu> totalMenuList = Lists.newArrayList();
-		List<Menu> menuList = userDao.findMenuListByUser(id);
-		User user =  UserUtils.getUser();
-		String userId = user.getId();
-		List<String> roleIdList = user.getRoleIdList();
-		for(Menu menu: menuList) {
-
-			// 菜单名
-			String menuId = menu.getId();
-			try {
-				// 检验任务
-				if(MenuProcess.MENU_INQUIRE_TASK.equals(menuId)) {
-					// 未开始任务数
-					Menu notStarted = new Menu();
-					// 进行中任务数
-					Menu ongoing = new Menu();
-					// 已完成任务数
-					Menu completed = new Menu();
-					BeanUtils.copyProperties(notStarted, menu);
-					BeanUtils.copyProperties(ongoing, menu);
-					BeanUtils.copyProperties(completed, menu);
-					//未开始任务数
-//					int notStartedCount = inquireTaskService.findNotStarted(inquireTask);//TODO 环境搭建注释掉
-					int notStartedCount = 0;
-					//进行中任务数
-//					int ongoingCount = inquireTaskService.findOngoing(inquireTask);
-					int ongoingCount = 0;
-					//已完成任务数
-//					int completedCount = inquireTaskService.findCompleted(inquireTask);
-					int completedCount = 0;
-					notStarted.setTaskCount(notStartedCount);
-					notStarted.setName("待检验任务");
-					ongoing.setTaskCount(ongoingCount);
-					ongoing.setName("进行中任务");
-					completed.setTaskCount(completedCount);
-					completed.setName("已完成任务");
-					totalMenuList.add(0, completed);
-					totalMenuList.add(1, ongoing);
-					totalMenuList.add(2, notStarted);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-		return totalMenuList;
-	}
+//	public List<Menu> getMenuListByUser(String id){
+//
+//		List<Menu> totalMenuList = Lists.newArrayList();
+//		List<Menu> menuList = userDao.findMenuListByUser(id);
+//		User user =  UserUtils.getUser();
+//		String userId = user.getId();
+//		List<String> roleIdList = user.getRoleIdList();
+//		for(Menu menu: menuList) {
+//
+//			// 菜单名
+//			String menuId = menu.getId();
+//			try {
+//				// 检验任务
+//				if(MenuProcess.MENU_INQUIRE_TASK.equals(menuId)) {
+//					// 未开始任务数
+//					Menu notStarted = new Menu();
+//					// 进行中任务数
+//					Menu ongoing = new Menu();
+//					// 已完成任务数
+//					Menu completed = new Menu();
+//					BeanUtils.copyProperties(notStarted, menu);
+//					BeanUtils.copyProperties(ongoing, menu);
+//					BeanUtils.copyProperties(completed, menu);
+//					//未开始任务数
+////					int notStartedCount = inquireTaskService.findNotStarted(inquireTask);//TODO 环境搭建注释掉
+//					int notStartedCount = 0;
+//					//进行中任务数
+////					int ongoingCount = inquireTaskService.findOngoing(inquireTask);
+//					int ongoingCount = 0;
+//					//已完成任务数
+////					int completedCount = inquireTaskService.findCompleted(inquireTask);
+//					int completedCount = 0;
+//					notStarted.setTaskCount(notStartedCount);
+//					notStarted.setName("待检验任务");
+//					ongoing.setTaskCount(ongoingCount);
+//					ongoing.setName("进行中任务");
+//					completed.setTaskCount(completedCount);
+//					completed.setName("已完成任务");
+//					totalMenuList.add(0, completed);
+//					totalMenuList.add(1, ongoing);
+//					totalMenuList.add(2, notStarted);
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+//		return totalMenuList;
+//	}
 	
 	/**
 	 * 批量修改用户密码

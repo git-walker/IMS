@@ -8,7 +8,6 @@
 			<div id="user-profile-1" class="user-profile row">
 				<div class="col-xs-12 col-sm-3 center">
 					<div>
-						<!-- #section:pages/profile.picture -->
 						<span class="profile-picture">
 							<c:if test="${not empty user.photo }">
 								<img id="avatar" data-pk="13" data-placement="right" class="editable img-responsive" alt="${user.name }" src="${ctxUploads}/userAvatar/${user.id}_large${user.photo}" onerror="this.src='${ctxStatic}/assets/avatars/profile-pic.jpg'"/>
@@ -18,7 +17,6 @@
 							</c:if>
 						</span>
 
-						<!-- /section:pages/profile.picture -->
 						<div class="space-4"></div>
 
 						<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
@@ -32,7 +30,6 @@
 
 					<div class="space-6"></div>
 
-					<!-- #section:pages/profile.contact -->
 					<div class="profile-contact-info">
 						<div class="profile-contact-links align-left">
 							<c:forEach items="${user.roleList}" var="role" varStatus="idxStatus">
@@ -44,37 +41,9 @@
 						</div>
 					</div>
 
-					<!-- /section:pages/profile.contact -->
 					<div class="hr hr12 dotted"></div>
 
-					<!-- #section:custom/extra.grid -->
 					<div class="clearfix">
-						<!-- 
-						<c:if test="${not empty completed }">
-							<div class="grid3">
-								<a href="#page/qmis/inquireTask">
-									<span class="bigger-175 blue">${completed}</span></a>
-								<br />
-								已完成任务
-							</div>
-						</c:if>
-						<c:if test="${not empty ongoing }">
-							<div class="grid3">
-								<a href="#page/qmis/inquireTask">
-									<span class="bigger-175 blue">${ongoing}</span></a>
-								<br />
-								进行中任务
-							</div>
-						</c:if>
-						<c:if test="${not empty notStarted }">
-							<div class="grid3">
-								<a href="#page/qmis/inquireTask">
-									<span class="bigger-175 blue">${notStarted}</span></a>
-								<br />
-								待检验任务
-							</div>
-						</c:if>
-						 -->
 						<c:forEach items="${menuList}" var="menu">
 							<div class="grid3">
 								<a href="#page${menu.href}">
@@ -85,58 +54,10 @@
 						</c:forEach>
 					</div>
 
-					<!-- /section:custom/extra.grid -->
 					<div class="hr hr16 dotted"></div>
 				</div>
 
 				<div class="col-xs-12 col-sm-9" >
-					<!-- <div class="center">
-						<span class="btn btn-app btn-sm btn-light no-hover">
-							<span class="line-height-1 bigger-170 blue"> 1,411 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Views </span>
-						</span>
-
-						<span class="btn btn-app btn-sm btn-yellow no-hover">
-							<span class="line-height-1 bigger-170"> 32 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Followers </span>
-						</span>
-
-						<span class="btn btn-app btn-sm btn-pink no-hover">
-							<span class="line-height-1 bigger-170"> 4 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Projects </span>
-						</span>
-
-						<span class="btn btn-app btn-sm btn-grey no-hover">
-							<span class="line-height-1 bigger-170"> 23 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Reviews </span>
-						</span>
-
-						<span class="btn btn-app btn-sm btn-success no-hover">
-							<span class="line-height-1 bigger-170"> 7 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Albums </span>
-						</span>
-
-						<span class="btn btn-app btn-sm btn-primary no-hover">
-							<span class="line-height-1 bigger-170"> 55 </span>
-
-							<br />
-							<span class="line-height-1 smaller-90"> Contacts </span>
-						</span>
-					</div>
-
-					<div class="space-12"></div> -->
-
-					<!-- #section:pages/profile.info -->
 					<div class="profile-user-info profile-user-info-striped">
 						<div class="profile-info-row">
 							<div class="profile-info-name"> 用户名 </div>
@@ -199,99 +120,7 @@
 					</div>
 				</div>
 			</div>
-			<%-- 	
-			<div class="profile-user-info profile-user-info-striped">
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						头像:
-					</div>
-					<div class="profile-info-value">
-						<span class="profile-picture">
-								<img id="avatar" class="editable img-responsive" alt="用户头像" src="${ctxStatic}/assets/avatars/profile-pic.jpg" />
-						</span>
-						<form:hidden id="nameImage" path="photo" htmlEscape="false"
-							maxlength="255" class="input-xlarge" />
-						<sys:ckfinder input="nameImage" type="images" uploadPath="/photo"
-							selectMultiple="false" maxWidth="100" maxHeight="100" />
-					</div>
-				</div>
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						归属公司:
-					</div>
-					<div class="profile-info-value">
-						${user.company.name}
-					</div>
-					<div class="profile-info-name">
-						归属部门:
-					</div>
-					<div class="profile-info-value">
-						${user.office.name}
-					</div>
-				</div>
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						姓名:
-					</div>
-					<div class="profile-info-value">
-						<form:input path="name" htmlEscape="false" maxlength="50"
-							class="required" readonly="true" />
-					</div>
-					<div class="profile-info-name">
-						邮箱:
-					</div>
-					<div class="profile-info-value">
-						<form:input path="email" htmlEscape="false" maxlength="50"
-							class="email" />
-					</div>
-				</div>
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						电话:
-					</div>
-					<div class="profile-info-value">
-						<form:input path="phone" htmlEscape="false" maxlength="50" />
-					</div>
-					<div class="profile-info-name">
-						手机:
-					</div>
-					<div class="profile-info-value">
-						<form:input path="mobile" htmlEscape="false" maxlength="50" />
-					</div>
-				</div>
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						备注:
-					</div>
-					<div class="profile-info-value">
-						<form:textarea path="remarks" htmlEscape="false" rows="3"
-							maxlength="200" class="input-xlarge" />
-					</div>
-					<div class="profile-info-name">
-						用户类型:
-					</div>
-					<div class="profile-info-value">
-						${fns:getDictLabel(user.userType, 'sys_user_type', '无')}
-					</div>
-				</div>
-				<div class="profile-info-row form-group has-info">
-					<div class="profile-info-name">
-						用户角色:
-					</div>
-					<div class="profile-info-value">
-						${user.roleNames}
-					</div>
-					<div class="profile-info-name">
-						上次登录:
-					</div>
-					<div class="profile-info-value">
-						IP: ${user.oldLoginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：
-						<fmt:formatDate value="${user.oldLoginDate}" type="both"
-							dateStyle="full" />
-					</div>
-				</div>
 
-			</div> --%>
 	</div>
 </div>
 <script type="text/javascript">
@@ -310,27 +139,7 @@
 				var version = $(this).attr('version');
 				location.href="${ctx}/sys/user/downloadChrome?version="+version;
 			});
-		    //水印
-		 /*   var str = "${user.name}";
-            addWaterMarker(str);
-            function addWaterMarker(str){
-                var can = document.createElement('canvas');
-                var divId = document.getElementById("canvas");
-                divId.appendChild(can);
-                can.width=160;
-                can.height=120;
-                can.style.display='none';
-                var cans = can.getContext('2d');
-                cans.rotate(-20*Math.PI/180);
-                cans.font = "16px Microsoft JhengHei";
-                cans.fillStyle = "rgba(17, 17, 17, 0.50)";
-                cans.textAlign = 'left';
-                cans.textBaseline = 'Middle';
-                cans.fillText(str,can.width/3,can.height/2);
 
-                divId.style.backgroundImage="url("+can.toDataURL("image/png")+")";
-            }*/
-			//$.fn.editable.defaults.mode = 'inline';
 			$.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
 			$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
 										'<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';

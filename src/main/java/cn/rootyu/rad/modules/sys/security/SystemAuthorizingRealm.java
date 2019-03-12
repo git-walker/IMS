@@ -41,7 +41,6 @@ import java.util.List;
  * @version 2014-7-5
  */
 @Service
-//@DependsOn({"userDao","roleDao","menuDao"})
 public class SystemAuthorizingRealm extends AuthorizingRealm {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -196,15 +195,15 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	 * 清空所有关联认证
 	 * @Deprecated 不需要清空，授权缓存保存到session中
 	 */
-	@Deprecated
-	public void clearAllCachedAuthorizationInfo() {
-//		Cache<Object, AuthorizationInfo> cache = getAuthorizationCache();
-//		if (cache != null) {
-//			for (Object key : cache.keys()) {
-//				cache.remove(key);
-//			}
-//		}
-	}
+//	@Deprecated
+//	public void clearAllCachedAuthorizationInfo() {
+////		Cache<Object, AuthorizationInfo> cache = getAuthorizationCache();
+////		if (cache != null) {
+////			for (Object key : cache.keys()) {
+////				cache.remove(key);
+////			}
+////		}
+//	}
 
 	/**
 	 * 获取系统业务对象
@@ -227,8 +226,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		private String loginName; // 登录名
 		private String name; // 姓名
 		private boolean mobileLogin; // 是否手机登录
-		
-//		private Map<String, Object> cacheMap;
+
 
 		public Principal(User user, boolean mobileLogin) {
 			this.id = user.getId();
@@ -252,14 +250,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		public boolean isMobileLogin() {
 			return mobileLogin;
 		}
-
-//		@JsonIgnore
-//		public Map<String, Object> getCacheMap() {
-//			if (cacheMap==null){
-//				cacheMap = new HashMap<String, Object>();
-//			}
-//			return cacheMap;
-//		}
 
 		/**
 		 * 获取SESSIONID

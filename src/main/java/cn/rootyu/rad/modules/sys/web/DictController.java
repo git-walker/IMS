@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 字典Controller
- * @author DHC
- * @version 2014-05-16
+ * @ClassName DictController
+ * @Description 字典Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:41
+ * @Version 1.0
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/dict")

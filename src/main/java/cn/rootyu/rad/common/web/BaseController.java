@@ -5,9 +5,7 @@ package cn.rootyu.rad.common.web;
 
 import cn.rootyu.rad.common.beanvalidator.BeanValidators;
 import cn.rootyu.rad.common.mapper.JsonMapper;
-import cn.rootyu.rad.common.utils.DateUtils;
 import cn.rootyu.rad.modules.sys.dao.OfficeDao;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
-import java.beans.PropertyEditorSupport;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -211,33 +203,6 @@ public abstract class BaseController {
         }
     }
 
-    /**
-     * ajax 文件上传 返回值为JSON 可使用此方法
-     * @param response HttpServletResponse
-     * @param messageStatus 状态
-     * @param message 信息
-     */
-    protected void ajaxReturnJson(HttpServletResponse response, String messageStatus, String message) {
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-//        PrintWriter wirte = null;
-//        JSONObject json = new JSONObject();
-//        try {
-//            // 返回可以向客户端发送字符文本的PrintWriter对象
-//            wirte = response.getWriter();
-//            json.put("message", message);
-//            json.put("messageStatus", messageStatus);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (wirte != null) {
-//                wirte.print(json);
-//                wirte.flush();
-//                wirte.close();
-//            }
-//        }
-    }
-
 
     /**
      * 参数绑定异常
@@ -255,51 +220,4 @@ public abstract class BaseController {
         return "error/403";
     }
 
-    /**
-     * 初始化数据绑定
-     * 1. 将所有传递进来的String进行HTML编码，防止XSS攻击
-     * 2. 将字段中Date类型转换为String类型
-     */
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        // String类型转换，将所有传递进来的String进行HTML编码，防止XSS攻击
-        binder.registerCustomEditor(String.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                setValue(text == null ? null : StringEscapeUtils.escapeHtml4(text.trim()));
-            }
-
-            @Override
-            public String getAsText() {
-                Object value = getValue();
-                return value != null ? value.toString() : "";
-            }
-        });
-        // Date 类型转换
-        binder.registerCustomEditor(Date.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                setValue(DateUtils.parseDate(text));
-            }
-//			@Override
-//			public String getAsText() {
-//				Object value = getValue();
-//				return value != null ? DateUtils.formatDateTime((Date)value) : "";
-//			}
-        });
-    }
-
-    /**
-     * 将请求参数放入map中
-     * @param request
-     * @param params
-     */
-    protected void wrapParams(HttpServletRequest request,Map<String,Object> params){
-        Enumeration en= request.getParameterNames();
-        Object obj=null;
-        while (en.hasMoreElements()){
-            obj=en.nextElement();
-            params.put(obj.toString(),request.getParameter(obj.toString()));
-        }
-    }
 }

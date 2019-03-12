@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.persistence.annotation;
 
 import org.springframework.stereotype.Component;

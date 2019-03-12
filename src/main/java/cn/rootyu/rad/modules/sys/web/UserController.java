@@ -1,9 +1,5 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.web;
 
-import cn.rootyu.ims.common.dao.CodeValueDao;
 import cn.rootyu.rad.common.beanvalidator.BeanValidators;
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.persistence.Page;
@@ -14,7 +10,6 @@ import cn.rootyu.rad.common.utils.excel.ImportExcel;
 import cn.rootyu.rad.common.web.BaseController;
 import cn.rootyu.rad.common.web.Servlets;
 import cn.rootyu.rad.modules.sys.dao.UserDao;
-import cn.rootyu.rad.modules.sys.entity.Menu;
 import cn.rootyu.rad.modules.sys.entity.Office;
 import cn.rootyu.rad.modules.sys.entity.Role;
 import cn.rootyu.rad.modules.sys.entity.User;
@@ -40,12 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.dhc.ims.inspection.service.InquireTaskService;
-
 /**
- * 用户Controller
- * @author DHC
- * @version 2013-8-29
+ * @ClassName RoleController
+ * @Description 角色Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:56
+ * @Version 1.0
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/user")
@@ -55,8 +50,6 @@ public class UserController extends BaseController {
 	private UserDao userDao;
 	@Autowired
 	private SystemService systemService;
-	@Autowired
-	private CodeValueDao codeValueDao;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -515,8 +508,6 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "info")
 	public String info(User user, HttpServletResponse response, Model model) {
 		User currentUser = UserUtils.getUser();
-		List<Menu> menuList = systemService.getMenuListByUser(currentUser.getId());
-    	model.addAttribute("menuList", menuList);
 		model.addAttribute("user", currentUser);
 		model.addAttribute("Global", new Global());
 		return "modules/sys/userInfo";

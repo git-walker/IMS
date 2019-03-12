@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 菜单Controller
- * @author DHC
- * @version 2013-3-23
+ * @ClassName MenuController
+ * @Description 菜单Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:56
+ * @Version 1.0
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/menu")

@@ -7,10 +7,7 @@ import cn.rootyu.rad.common.utils.PropertiesLoader;
 import cn.rootyu.rad.common.utils.StringUtils;
 import com.ckfinder.connector.ServletContextFactory;
 import com.google.common.collect.Maps;
-import org.springframework.core.io.DefaultResourceLoader;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -106,14 +103,6 @@ public class Global {
 		String dm = getConfig("demoMode");
 		return "true".equals(dm) || "1".equals(dm);
 	}
-	
-	/**
-	 * 在修改系统用户和角色时是否同步到Activiti
-	 */
-	public static Boolean isSynActivitiIndetity() {
-		String dm = getConfig("activiti.isSynActivitiIndetity");
-		return "true".equals(dm) || "1".equals(dm);
-	}
     
 	/**
 	 * 页面获取常量
@@ -144,40 +133,7 @@ public class Global {
 		if(!dir.endsWith("/")) {
 			dir += "/";
 		}
-//		System.out.println("userfiles.basedir: " + dir);
 		return dir;
 	}
-	
-    /**
-     * 获取工程路径
-     * @return
-     */
-    public static String getProjectPath(){
-    	// 如果配置了工程路径，则直接返回，否则自动获取。
-		String projectPath = Global.getConfig("projectPath");
-		if (StringUtils.isNotBlank(projectPath)){
-			return projectPath;
-		}
-		try {
-			File file = new DefaultResourceLoader().getResource("").getFile();
-			if (file != null){
-				while(true){
-					File f = new File(file.getPath() + File.separator + "src" + File.separator + "main");
-					if (f == null || f.exists()){
-						break;
-					}
-					if (file.getParentFile() != null){
-						file = file.getParentFile();
-					}else{
-						break;
-					}
-				}
-				projectPath = file.toString();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return projectPath;
-    }
 	
 }

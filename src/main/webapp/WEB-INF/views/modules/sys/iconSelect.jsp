@@ -2,12 +2,6 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp" %>
 <title>选取图标-菜单管理</title>
 <style>
-	/*body {*/
-	/*font-family: 'Microsoft Yahei', Helvetica, Arial, sans-serif;*/
-	/*font-size: 10px;*/
-	/*color: #333333;*/
-	/*padding-top: 10px;*/
-	/*}*/
 
 	.fontawesome-icon-list .fa-hover a {
 		display: block;

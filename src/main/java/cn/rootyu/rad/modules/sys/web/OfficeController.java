@@ -30,9 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 机构Controller
- * @author DHC
- * @version 2013-5-15
+ * @ClassName OfficeController
+ * @Description 机构Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:56
+ * @Version 1.0
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/office")

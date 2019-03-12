@@ -459,25 +459,6 @@
 					$("div#sidebar ul.nav li[data-id='"+id+"']").show();
 				}
 			});
-			<%--// 获取通知数目--%>
-			<%--function getNotifyNum(){--%>
-				<%--$.get("${ctx}/sys/notify/count?updateSession=0&t="+new Date().getTime(),function(data){--%>
-					<%--if(data.length>5){--%>
-						<%--alert('未登录或登录超时。请重新登录，谢谢！');--%>
-						<%--top.location = "${ctx}";--%>
-
-					<%--}else if (data != '0'){--%>
-						<%--if($("#notifyLi:hidden").length!=0){--%>
-							<%--$("#notifyLi").show();--%>
-						<%--}--%>
-						<%--$("#unReadNotifys").html(data);--%>
-					<%--}else{--%>
-						<%--$("#notifyLi").hide();--%>
-					<%--}--%>
-				<%--});--%>
-			<%--}--%>
-			<%--getNotifyNum();--%>
-			<%--setInterval(getNotifyNum, 60000*3);--%>
 
 		});
 

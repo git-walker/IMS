@@ -16,9 +16,12 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Entity支持类
- * @author DHC
- * @version 2014-05-16
+ * @ClassName BaseEntity
+ * @Description 实体类支撑类
+ * @Author yuhui
+ * @Date 2019/3/11 10:20
+ * @Version 1.0
+ * @param <T>
  */
 
 public abstract class BaseEntity<T> implements Serializable {

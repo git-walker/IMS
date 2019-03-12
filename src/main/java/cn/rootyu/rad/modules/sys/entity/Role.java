@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.entity;
 
 import cn.rootyu.rad.common.config.Global;
@@ -134,26 +131,6 @@ public class Role extends DataEntity<Role> {
 	public void setOldEnname(String oldEnname) {
 		this.oldEnname = oldEnname;
 	}
-
-//	public List<User> getUserList() {
-//		return userList;
-//	}
-//
-//	public void setUserList(List<User> userList) {
-//		this.userList = userList;
-//	}
-//	
-//	public List<String> getUserIdList() {
-//		List<String> nameIdList = Lists.newArrayList();
-//		for (User user : userList) {
-//			nameIdList.add(user.getId());
-//		}
-//		return nameIdList;
-//	}
-//
-//	public String getUserIds() {
-//		return StringUtils.join(getUserIdList(), ",");
-//	}
 
 	public List<Menu> getMenuList() {
 		return menuList;

@@ -6,9 +6,11 @@ package cn.rootyu.rad.modules.sys.web;
 import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.security.shiro.session.SessionDAO;
 import cn.rootyu.rad.common.servlet.ValidateCodeServlet;
-import cn.rootyu.rad.common.utils.*;
+import cn.rootyu.rad.common.utils.CacheUtils;
+import cn.rootyu.rad.common.utils.CookieUtils;
+import cn.rootyu.rad.common.utils.IdGen;
+import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.web.BaseController;
-import cn.rootyu.rad.modules.sys.entity.Menu;
 import cn.rootyu.rad.modules.sys.security.FormAuthenticationFilter;
 import cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
@@ -29,14 +31,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 /**
- * 登录Controller
- * @author DHC
- * @version 2013-5-31
+ * @ClassName LoginController
+ * @Description 登录Controller
+ * @Authour yuhui
+ * @Date 2019/3/11 9:42
+ * @Version 1.0
  */
 @Controller
 public class LoginController extends BaseController {
@@ -50,12 +53,6 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "${adminPath}/login", method = RequestMethod.GET)
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		SystemAuthorizingRealm.Principal principal = UserUtils.getPrincipal();
-
-//		// 默认页签模式
-//		String tabmode = CookieUtils.getCookie(request, "tabmode");
-//		if (tabmode == null){
-//			CookieUtils.setCookie(response, "tabmode", "1");
-//		}
 		
 		if (logger.isDebugEnabled()){
 			logger.debug("login, active session size: {}", sessionDAO.getActiveSessions(false).size());
@@ -70,20 +67,6 @@ public class LoginController extends BaseController {
 		if(principal != null && !principal.isMobileLogin()){
 			return "redirect:" + adminPath;
 		}
-
-		// 如果是手机登录，则返回JSON字符串
-//		if (principal.isMobileLogin()){
-//			Map<String,Object> map = Maps.newHashMap();
-//			map.put("data", model);
-//			map.put("resultStatus", "601");
-//			return renderString(response, map);
-//		}
-//		String view;
-//		view = "/WEB-INF/views/modules/sys/sysLogin.jsp";
-//		view = "classpath:";
-//		view += "jar:file:/D:/GitHub/jeesite/src/main/webapp/WEB-INF/lib/jeesite.jar!";
-//		view += "/"+getClass().getName().replaceAll("\\.", "/").replace(getClass().getSimpleName(), "")+"view/sysLogin";
-//		view += ".jsp";
 		return "modules/sys/sysLogin";
 	}
 
@@ -164,66 +147,6 @@ public class LoginController extends BaseController {
 				return "redirect:" + adminPath + "/login";
 			}
 		}
-		
-		// 如果是手机登录，则返回JSON字符串
-		if (principal.isMobileLogin()){
-			if (request.getParameter("login") != null){
-				Map<String,Object> map = Maps.newHashMap();
-				map.put("data", principal);
-				map.put("sessionid", principal.getSessionid());
-				
-				String qmisStatus = "1";
-                String ncrStatus = "1";
-                String resultStatus = "600";
-                
-				List<Menu> allMenuList = UserUtils.getMenuList();
-				if(allMenuList .size() > 0 ){
-				    for (Menu menu : allMenuList){
-				        String menuId = menu.getId();
-				        switch (menuId) {
-				        case ConstantUtils.MenuProcess.MENU_QMIS:
-				            qmisStatus = "0";
-				            break;
-				        case ConstantUtils.MenuProcess.MENU_NCR:
-				            ncrStatus = "0";
-				            break;
-				        }
-				    }
-				    resultStatus = "600";
-				}
-				
-//				map.put("status", resultStatus);
-				map.put("resultStatus", resultStatus);
-				map.put("resultMessageBox", "登录成功！");
-				map.put("qmisStatus", qmisStatus);
-				map.put("ncrStatus", ncrStatus);
-//				map.put("message", "登录成功！");
-				
-				return renderString(response, map);
-			}
-			if (request.getParameter("index") != null){
-				return "modules/sys/sysIndex";
-			}
-			return "redirect:" + adminPath + "/login";
-		}
-		
-//		// 登录成功后，获取上次登录的当前站点ID
-//		UserUtils.putCache("siteId", StringUtils.toLong(CookieUtils.getCookie(request, "siteId")));
-
-//		System.out.println("==========================a");
-//		try {
-//			byte[] bytes = FileUtils.readFileToByteArray(
-//					FileUtils.getFile("c:\\sxt.dmp"));
-//			UserUtils.getSession().setAttribute("kkk", bytes);
-//			UserUtils.getSession().setAttribute("kkk2", bytes);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-////		for (int i=0; i<1000000; i++){
-////			//UserUtils.getSession().setAttribute("a", "a");
-////			request.getSession().setAttribute("aaa", "aa");
-////		}
-//		System.out.println("==========================b");
 		return "modules/sys/sysIndex";
 	}
 	

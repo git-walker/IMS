@@ -38,9 +38,6 @@ public class LogoutController extends BaseController {
 			resultMap.put("data", "无权操作");
 			return resultMap;
 		}
-//		System.out.println("Yunqi-Testing："+"我的测试点+退出");
-//		boolean mobile = WebUtils.isTrue(request, FormAuthenticationFilter.DEFAULT_MOBILE_PARAM);
-//		System.out.println("mobile："+mobile);
 		try {
 			UserUtils.getSubject().logout();
 		} catch (Exception e) {

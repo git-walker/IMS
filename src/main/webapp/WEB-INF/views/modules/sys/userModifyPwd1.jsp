@@ -1,18 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
-
 <title>修改密码</title>
-
-<!-- <div class="page-header">
-	<h1>
-		用户管理
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-			修改密码
-		</small>
-	</h1>
-</div> -->
-						
 <div class="row">
 	<div class="col-xs-12 col-sm-12">
 				<div class="widget-box">

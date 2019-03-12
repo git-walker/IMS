@@ -40,9 +40,6 @@
 		<!-- resultMap空值映射问题解决 -->
 		<setting name="callSettersOnNulls" value="true"/>
 		
-		<!-- 打印sql -->
-<!--         <setting name="logImpl" value="STDOUT_LOGGING" />  -->
-		
 	</settings>
 	
 	<!-- 类型别名 -->
@@ -52,7 +49,6 @@
 	
 	<!-- 插件配置 -->
 	<plugins>
-		<!--<plugin interceptor="PaginationInterceptor" />-->
 		<plugin interceptor="com.github.pagehelper.PageHelper">
 			<property name="dialect" value="mysql" />
 			<property name="reasonable" value="true" />
