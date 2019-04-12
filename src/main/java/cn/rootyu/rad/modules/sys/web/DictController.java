@@ -1,14 +1,12 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.web;
 
+import cn.rootyu.ims.common.entity.LayuiPageInfo;
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.Page;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.web.BaseController;
 import cn.rootyu.rad.modules.sys.entity.Dict;
 import cn.rootyu.rad.modules.sys.service.DictService;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -61,14 +59,18 @@ public class DictController extends BaseController {
 	@RequiresPermissions("sys:dict:view")
 	@RequestMapping(value = {"searchPage"})
 	@ResponseBody
-	public Map<String,Object> searchPage(Dict dict, HttpServletRequest request, HttpServletResponse response) {
-        Page<Dict> page = dictService.findPage(new Page<Dict>(request, response),dict);
-        Map<String,Object> returnMap = new HashMap<String,Object>();
-        returnMap.put("total", page.getTotalPage());
-        returnMap.put("pageNo", page.getPageNo());
-        returnMap.put("records", page.getCount());
-        returnMap.put("rows", page.getList());
-        return returnMap;              
+	public Map<String,Object> searchPage(Dict dict,HttpServletRequest request, HttpServletResponse response) {
+		int pageNo=Integer.valueOf(request.getParameter("pageNo"));
+		int pageSize=Integer.valueOf(request.getParameter("rows"));
+		PageHelper.startPage(pageNo,pageSize);
+		LayuiPageInfo<Dict> page = dictService.findPageList(dict);
+		Map<String,Object> returnMap = new HashMap<String,Object>();
+		long queryTotalRecord= page.getCount();
+		returnMap.put("total", queryTotalRecord%pageSize==0?queryTotalRecord/pageSize:queryTotalRecord/pageSize+1);//总页数
+		returnMap.put("pageNo", pageNo);
+		returnMap.put("records", queryTotalRecord);//总记录数
+		returnMap.put("rows", page.getData());
+		return returnMap;
 	}
 
 	

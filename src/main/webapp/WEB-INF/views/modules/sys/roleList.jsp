@@ -181,7 +181,8 @@
 											'type':'success'
 										});
 										that.dialog( "close" );
-										$( "#assignFunctionDiv" ).hide();
+                                        $(this).addClass('hide');
+										// $( "#assignFunctionDiv" ).hide();
 										hideResult();
 									}else if(result.messageStatus=="0"){
 										$.msg_show.Init({
@@ -199,7 +200,8 @@
 							"class" : "btn btn-minier",
 							click: function() {
 								$( this ).dialog( "close" );
-								$( "#assignFunctionDiv" ).hide();
+                                $(this).addClass('hide');
+								// $( "#assignFunctionDiv" ).hide();
 							}
 						}
 					],

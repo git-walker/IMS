@@ -43,16 +43,16 @@
 
 					<div class="hr hr12 dotted"></div>
 
-					<div class="clearfix">
-						<c:forEach items="${menuList}" var="menu">
-							<div class="grid3">
-								<a href="#page${menu.href}">
-									<span class="bigger-175 blue">${menu.taskCount}</span></a>
-								<br />
-								${menu.name}
-							</div>
-						</c:forEach>
-					</div>
+					<%--<div class="clearfix">--%>
+						<%--<c:forEach items="${menuList}" var="menu">--%>
+							<%--<div class="grid3">--%>
+								<%--<a href="#page${menu.href}">--%>
+									<%--<span class="bigger-175 blue">${menu.taskCount}</span></a>--%>
+								<%--<br />--%>
+								<%--${menu.name}--%>
+							<%--</div>--%>
+						<%--</c:forEach>--%>
+					<%--</div>--%>
 
 					<div class="hr hr16 dotted"></div>
 				</div>

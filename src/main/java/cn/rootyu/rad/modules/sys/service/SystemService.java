@@ -1,11 +1,8 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.service;
 
+import cn.rootyu.ims.common.entity.LayuiPageInfo;
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.Page;
-import cn.rootyu.rad.common.security.Digests;
+import cn.rootyu.rad.common.security.shiro.Digests;
 import cn.rootyu.rad.common.security.shiro.session.SessionDAO;
 import cn.rootyu.rad.common.service.BaseService;
 import cn.rootyu.rad.common.utils.CacheUtils;
@@ -18,491 +15,406 @@ import cn.rootyu.rad.modules.sys.entity.Menu;
 import cn.rootyu.rad.modules.sys.entity.Office;
 import cn.rootyu.rad.modules.sys.entity.Role;
 import cn.rootyu.rad.modules.sys.entity.User;
+import cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
-import org.apache.shiro.session.Session;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
 
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
- * @author DHC
- * @version 2013-12-05
+ * @author yuhui
+ * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
 public class SystemService extends BaseService {
-	
-	public static final String HASH_ALGORITHM = "SHA-1";
-	public static final int HASH_INTERATIONS = 1024;
-	public static final int SALT_SIZE = 8;
-	
-	@Autowired
-	private UserDao userDao;
-	@Autowired
-	private RoleDao roleDao;
-	@Autowired
-	private MenuDao menuDao;
-	@Autowired
-	private SessionDAO sessionDao;
 
-	
-	public SessionDAO getSessionDao() {
-		return sessionDao;
-	}
+    public static final String HASH_ALGORITHM = "SHA-1";
+    public static final int HASH_INTERATIONS = 1024;
+    public static final int SALT_SIZE = 8;
 
-	
-	//-- User Service --//
-	
-	/**
-	 * 获取用户
-	 * @param id
-	 * @return
-	 */
-	public User getUser(String id) {
-		return UserUtils.get(id);
-	}
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private RoleDao roleDao;
+    @Autowired
+    private MenuDao menuDao;
+    @Autowired
+    private SessionDAO sessionDao;
+    @Autowired
+    private SystemAuthorizingRealm systemRealm;
 
-	/**
-	 * 根据登录名获取用户
-	 * @param loginName
-	 * @return
-	 */
-	public User getUserByLoginName(String loginName) {
-		return UserUtils.getByLoginName(loginName);
-	}
-	
-	public Page<User> findUser(Page<User> page, User user) {
-		// 生成数据权限过滤条件（dsf为dataScopeFilter的简写，在xml中使用 ${sqlMap.dsf}调用权限SQL）
-		user.getSqlMap().put("dsf", dataScopeFilter(user.getCurrentUser(), "o", "a"));
-		// 设置分页参数
-		user.setPage(page);
-		// 执行分页查询
-		page.setList(userDao.findList(user));
-		return page;
-	}
-	
-	/**
-	 * 无分页查询人员列表
-	 * @param user
-	 * @return
-	 */
-	public List<User> findUser(User user){
-		// 生成数据权限过滤条件（dsf为dataScopeFilter的简写，在xml中使用 ${sqlMap.dsf}调用权限SQL）
-		user.getSqlMap().put("dsf", dataScopeFilter(user.getCurrentUser(), "o", "a"));
-		List<User> list = userDao.findList(user);
-		return list;
-	}
+    public SessionDAO getSessionDao() {
+        return sessionDao;
+    }
 
-	/**
-	 * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
-	 * @param user
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<User> findUserByOfficeId(String officeId) {
-		List<User> list = (List<User>) CacheUtils.get(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId);
-		if (list == null){
-			User user = new User();
-			user.setOffice(new Office(officeId));
-			list = userDao.findUserByOfficeId(user);
-			CacheUtils.put(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId, list);
-		}
-		return list;
-	}
-	
-	@Transactional(readOnly = false)
-	public void saveUser(User user) {
-		if (StringUtils.isBlank(user.getId())){
-			user.preInsert();
-			userDao.insert(user);
-		}else{
-			// 清除原用户机构用户缓存
-			User oldUser = userDao.get(user.getId());
-			if (oldUser.getOffice() != null && oldUser.getOffice().getId() != null){
-				CacheUtils.remove(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + oldUser.getOffice().getId());
-			}
-			// 更新用户数据
-			user.preUpdate();
-			userDao.update(user);
-		}
-		if (StringUtils.isNotBlank(user.getId())){
-			// 更新用户与角色关联
-			userDao.deleteUserRole(user);
-			if (user.getRoleList() != null && user.getRoleList().size() > 0){
-				userDao.insertUserRole(user);
-			}else{
-				//throw new ServiceException(user.getLoginName() + "没有设置角色！");
-			}
-			// 清除用户缓存
-			UserUtils.clearCache(user);
-//			// 清除权限缓存
-//			systemRealm.clearAllCachedAuthorizationInfo();
-		}
-	}
-	
-	@Transactional(readOnly = false)
-	public void updateUserInfo(User user) {
-		user.preUpdate();
-		userDao.updateUserInfo(user);
-		// 清除用户缓存
-		UserUtils.clearCache(user);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public void deleteUser(User user) {
-		userDao.delete(user);
-		// 清除用户缓存
-		UserUtils.clearCache(user);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public void batchDeleteUser(List<String> list) {
-		for(int i = 0 ; i<list.size();i++){
-			String id = list.get(i);
-			deleteUser(new User(id));
-		}
-	}
-	
-	@Transactional(readOnly = false)
-	public void updatePasswordById(String id, String loginName, String newPassword) {
-		User user = new User(id);
-		user.setPassword(entryptPassword(newPassword));
-		userDao.updatePasswordById(user);
-		// 清除用户缓存
-		user.setLoginName(loginName);
-		UserUtils.clearCache(user);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public void updateUserLoginInfo(User user) {
-		// 保存上次登录信息
-		user.setOldLoginIp(user.getLoginIp());
-		user.setOldLoginDate(user.getLoginDate());
-		// 更新本次登录信息
-		user.setLoginIp(UserUtils.getSession().getHost());
-		user.setLoginDate(new Date());
-		userDao.updateLoginInfo(user);
-	}
-	
-	/**
-	 * 生成安全的密码，生成随机的16位salt并经过1024次 sha-1 hash
-	 */
-	public static String entryptPassword(String plainPassword) {
-		byte[] salt = Digests.generateSalt(SALT_SIZE);
-		byte[] hashPassword = Digests.sha1(plainPassword.getBytes(), salt, HASH_INTERATIONS);
-		return Encodes.encodeHex(salt)+ Encodes.encodeHex(hashPassword);
-	}
-	
-	/**
-	 * 验证密码
-	 * @param plainPassword 明文密码
-	 * @param password 密文密码
-	 * @return 验证成功返回true
-	 */
-	public static boolean validatePassword(String plainPassword, String password) {
-		byte[] salt = Encodes.decodeHex(password.substring(0,16));
-		byte[] hashPassword = Digests.sha1(plainPassword.getBytes(), salt, HASH_INTERATIONS);
-		return password.equals(Encodes.encodeHex(salt)+ Encodes.encodeHex(hashPassword));
-	}
-	
-	/**
-	 * 获得活动会话
-	 * @return
-	 */
-	public Collection<Session> getActiveSessions(){
-		return sessionDao.getActiveSessions(false);
-	}
-	
-	//-- Role Service --//
-	
-	public Role getRole(String id) {
-		return roleDao.get(id);
-	}
 
-	public Role getRoleByName(String name) {
-		Role r = new Role();
-		r.setName(name);
-		return roleDao.getByName(r);
-	}
-	
-	public Role getRoleByEnname(String enname) {
-		Role r = new Role();
-		r.setEnname(enname);
-		return roleDao.getByEnname(r);
-	}
-	
-	public List<Role> findRole(Role role){
-		return roleDao.findList(role);
-	}
-	
-	public List<Role> findAllRole(){
-		return UserUtils.getRoleList();
-	}
-	
-	@Transactional(readOnly = false)
-	public void saveRole(Role role) {
-		if (StringUtils.isBlank(role.getId())){
-			role.preInsert();
-			roleDao.insert(role);
-		}else{
-			role.preUpdate();
-			roleDao.update(role);
-		}
-		// 更新角色与菜单关联
-		roleDao.deleteRoleMenu(role);
-		if (role.getMenuList().size() > 0){
-			roleDao.insertRoleMenu(role);
-		}
-		// 更新角色与部门关联
-		roleDao.deleteRoleOffice(role);
-		if (role.getOfficeList().size() > 0){
-			roleDao.insertRoleOffice(role);
-		}
-		// 清除用户角色缓存
-//		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
-		UserUtils.clearCache();
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public void saveRoleWithoutMenu(Role role) {
-		if (StringUtils.isBlank(role.getId())){
-			role.preInsert();
-			roleDao.insert(role);
-		}else{
-			role.preUpdate();
-			roleDao.update(role);
-		}
-		// 清除用户角色缓存
-//		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
-		UserUtils.clearCache();
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public void saveRoleMenu(Role role) {
-		// 更新角色与菜单关联
-		roleDao.deleteRoleMenu(role);
-		if (role.getMenuList().size() > 0){
-			roleDao.insertRoleMenu(role);
-		}
-		// 清除用户角色缓存
-//		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
-		UserUtils.clearCache();
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
+    //-- User Service --//
 
-	@Transactional(readOnly = false)
-	public void deleteRole(Role role) {
-		roleDao.delete(role);
-		// 清除用户角色缓存
-		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-	}
-	
-	@Transactional(readOnly = false)
-	public Boolean outUserInRole(Role role, User user) {
-		List<Role> roles = user.getRoleList();
-		for (Role e : roles){
-			if (e.getId().equals(role.getId())){
-				roles.remove(e);
-				saveUser(user);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Transactional(readOnly = false)
-	public User assignUserToRole(Role role, User user) {
-		if (user == null){
-			return null;
-		}
-		List<String> roleIds = user.getRoleIdList();
-		if (roleIds.contains(role.getId())) {
-			return null;
-		}
-		user.getRoleList().add(role);
-		saveUser(user);
-		return user;
-	}
+    /**
+     * 获取用户
+     * @param id
+     */
+    public User getUser(String id) {
+        return UserUtils.get(id);
+    }
 
-	public Office getCompany(String officeId) {
-		return UserUtils.getCompany(officeId);
-	}
-	
-	//-- Menu Service --//
-	
-	public Menu getMenu(String id) {
-		return menuDao.get(id);
-	}
+    /**
+     * 根据登录名获取用户
+     * @param loginName
+     */
+    public User getUserByLoginName(String loginName) {
+        return UserUtils.getByLoginName(loginName);
+    }
 
-	public List<Menu> findAllMenu(){
-		return UserUtils.getMenuList();
-	}
-	
-	public List<Menu> findAllMenuTree(Boolean all){
-		return UserUtils.getTreeMenuList(all);
-	}
-	
-	public List<Menu> getMobileMenuList(){
-		return UserUtils.getMobileMenuList();
-	}
-	
-	@Transactional(readOnly = false)
-	public void saveMenu(Menu menu) {
-		
-		// 获取父节点实体
-		menu.setParent(this.getMenu(menu.getParent().getId()));
-		
-		// 获取修改前的parentIds，用于更新子节点的parentIds
-		String oldParentIds = menu.getParentIds(); 
-		
-		// 设置新的父节点串
-		menu.setParentIds(menu.getParent().getParentIds()+menu.getParent().getId()+",");
+    //分页查询用户
+    public LayuiPageInfo<User> findUser(HttpServletRequest request, HttpServletResponse response, User user) {
+        Integer pageNo = 1;
+        Integer pageSize = Integer.valueOf(Global.getConfig("page.pageSize"));
+        PageHelper.startPage(pageNo,pageSize);
+        // 生成数据权限过滤条件（dsf为dataScopeFilter的简写，在xml中使用 ${sqlMap.dsf}调用权限SQL）
+        user.getSqlMap().put("dsf", dataScopeFilter(user.getCurrentUser(), "o", "a"));
+        // 执行分页查询
+        List<User> list = userDao.findList(user);
+        return new LayuiPageInfo<>(list);
+    }
 
-		// 保存或更新实体
-		if (StringUtils.isBlank(menu.getId())){
-			menu.preInsert();
-			menuDao.insert(menu);
-		}else{
-			menu.preUpdate();
-			menuDao.update(menu);
-		}
-		
-		// 更新子节点 parentIds
-		Menu m = new Menu();
-		m.setParentIds("%,"+menu.getId()+",%");
-		List<Menu> list = menuDao.findByParentIdsLike(m);
-		for (Menu e : list){
-			e.setParentIds(e.getParentIds().replace(oldParentIds, menu.getParentIds()));
-			menuDao.updateParentIds(e);
-		}
-		// 清除用户菜单缓存
-		UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
-		UserUtils.removeCache(UserUtils.CACHE_TREE_MENU_LIST);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-		// 清除日志相关缓存
-//		CacheUtils.remove(LogUtils.CACHE_MENU_NAME_PATH_MAP);
-	}
+    /**
+     * 无分页查询人员列表
+     * @param user
+     */
+    public List<User> findAllUser(User user){
+        // 生成数据权限过滤条件（dsf为dataScopeFilter的简写，在xml中使用 ${sqlMap.dsf}调用权限SQL）
+        user.getSqlMap().put("dsf", dataScopeFilter(user.getCurrentUser(), "o", "a"));
+        List<User> list = userDao.findList(user);
+        return list;
+    }
 
-	@Transactional(readOnly = false)
-	public void updateMenuSort(Menu menu) {
-		menuDao.updateSort(menu);
-		// 清除用户菜单缓存
-		UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-		// 清除日志相关缓存
-//		CacheUtils.remove(LogUtils.CACHE_MENU_NAME_PATH_MAP);
-	}
+    /**
+     * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
+     * @param officeId
+     */
+    @SuppressWarnings("unchecked")
+    public List<User> findUserByOfficeId(String officeId) {
+        List<User> list = (List<User>) CacheUtils.get(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId);
+        if (list == null){
+            User user = new User();
+            user.setOffice(new Office(officeId));
+            list = userDao.findUserByOfficeId(user);
+            CacheUtils.put(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId, list);
+        }
+        return list;
+    }
 
-	@Transactional(readOnly = false)
-	public void deleteMenu(Menu menu) {
-		menuDao.delete(menu);
-		// 清除用户菜单缓存
-		UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
-//		// 清除权限缓存
-//		systemRealm.clearAllCachedAuthorizationInfo();
-		// 清除日志相关缓存
-//		CacheUtils.remove(LogUtils.CACHE_MENU_NAME_PATH_MAP);
-	}
-	
-	/**
-	 * 获取Key加载信息
-	 */
-	public static boolean printKeyLoadMessage(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("\r\n======================================================================\r\n");
-		sb.append("\r\n    欢迎使用 "+ Global.getConfig("productName")+"  - Powered By StupidYu\r\n");
-		sb.append("\r\n======================================================================\r\n");
-		System.out.println(sb.toString());
-		return true;
-	}
+    @Transactional(readOnly = false)
+    public void saveUser(User user) {
+        if (StringUtils.isBlank(user.getId())){
+            user.preInsert();
+            userDao.insert(user);
+        }else{
+            // 清除原用户机构用户缓存
+            User oldUser = userDao.get(user.getId());
+            if (oldUser.getOffice() != null && oldUser.getOffice().getId() != null){
+                CacheUtils.remove(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + oldUser.getOffice().getId());
+            }
+            // 更新用户数据
+            user.preUpdate();
+            userDao.update(user);
+        }
+        if (StringUtils.isNotBlank(user.getId())){
+            // 更新用户与角色关联
+            userDao.deleteUserRole(user);
+            if (user.getRoleList() != null && user.getRoleList().size() > 0){
+                userDao.insertUserRole(user);
+            }
+            // 清除用户缓存
+            UserUtils.clearCache(user);
+        }
+    }
 
-	public List<Menu> getMobileRoleList() {
-		return UserUtils.getMobileRoleList();
-	}
-	/**
-	 * 根据用户id查询所有显示的任务
-	 * @param id
-	 * @return
-	 */
-//	public List<Menu> getMenuListByUser(String id){
-//
-//		List<Menu> totalMenuList = Lists.newArrayList();
-//		List<Menu> menuList = userDao.findMenuListByUser(id);
-//		User user =  UserUtils.getUser();
-//		String userId = user.getId();
-//		List<String> roleIdList = user.getRoleIdList();
-//		for(Menu menu: menuList) {
-//
-//			// 菜单名
-//			String menuId = menu.getId();
-//			try {
-//				// 检验任务
-//				if(MenuProcess.MENU_INQUIRE_TASK.equals(menuId)) {
-//					// 未开始任务数
-//					Menu notStarted = new Menu();
-//					// 进行中任务数
-//					Menu ongoing = new Menu();
-//					// 已完成任务数
-//					Menu completed = new Menu();
-//					BeanUtils.copyProperties(notStarted, menu);
-//					BeanUtils.copyProperties(ongoing, menu);
-//					BeanUtils.copyProperties(completed, menu);
-//					//未开始任务数
-////					int notStartedCount = inquireTaskService.findNotStarted(inquireTask);//TODO 环境搭建注释掉
-//					int notStartedCount = 0;
-//					//进行中任务数
-////					int ongoingCount = inquireTaskService.findOngoing(inquireTask);
-//					int ongoingCount = 0;
-//					//已完成任务数
-////					int completedCount = inquireTaskService.findCompleted(inquireTask);
-//					int completedCount = 0;
-//					notStarted.setTaskCount(notStartedCount);
-//					notStarted.setName("待检验任务");
-//					ongoing.setTaskCount(ongoingCount);
-//					ongoing.setName("进行中任务");
-//					completed.setTaskCount(completedCount);
-//					completed.setName("已完成任务");
-//					totalMenuList.add(0, completed);
-//					totalMenuList.add(1, ongoing);
-//					totalMenuList.add(2, notStarted);
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
-//		return totalMenuList;
-//	}
-	
-	/**
-	 * 批量修改用户密码
-	 */
-	@Transactional(readOnly = false)
-	public void initUserPassword(){
-		
-		System.out.println("-------------");
-		String entryptPassword = SystemService.entryptPassword("123456");
-		userDao.updateNoPwdUser(entryptPassword);
-	}
+    @Transactional(readOnly = false)
+    public void updateUserInfo(User user) {
+        user.preUpdate();
+        userDao.updateUserInfo(user);
+        // 清除用户缓存
+        UserUtils.clearCache(user);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteUser(User user) {
+        userDao.delete(user);
+        // 清除用户缓存
+        UserUtils.clearCache(user);
+    }
+
+    @Transactional(readOnly = false)
+    public void batchDeleteUser(List<String> list) {
+        for(int i = 0 ; i<list.size();i++){
+            String id = list.get(i);
+            deleteUser(new User(id));
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public void updatePasswordById(String id, String loginName, String newPassword) {
+        User user = new User(id);
+        user.setPassword(entryptPassword(newPassword));
+        userDao.updatePasswordById(user);
+        // 清除用户缓存
+        user.setLoginName(loginName);
+        UserUtils.clearCache(user);
+    }
+
+    @Transactional(readOnly = false)
+    public void updateUserLoginInfo(User user) {
+        // 保存上次登录信息
+        user.setOldLoginIp(user.getLoginIp());
+        user.setOldLoginDate(user.getLoginDate());
+        // 更新本次登录信息
+        user.setLoginIp(UserUtils.getSession().getHost());
+        user.setLoginDate(new Date());
+        userDao.updateLoginInfo(user);
+    }
+
+    /**
+     * 生成安全的密码，生成随机的16位salt并经过1024次 sha-1 hash
+     */
+    public static String entryptPassword(String plainPassword) {
+        byte[] salt = Digests.generateSalt(SALT_SIZE);
+        byte[] hashPassword = Digests.sha1(plainPassword.getBytes(), salt, HASH_INTERATIONS);
+        return Encodes.encodeHex(salt)+ Encodes.encodeHex(hashPassword);
+    }
+
+    /**
+     * 验证密码
+     * @param plainPassword 明文密码
+     * @param password 密文密码
+     * @return 验证成功返回true
+     */
+    public static boolean validatePassword(String plainPassword, String password) {
+        byte[] salt = Encodes.decodeHex(password.substring(0,16));
+        byte[] hashPassword = Digests.sha1(plainPassword.getBytes(), salt, HASH_INTERATIONS);
+        return password.equals(Encodes.encodeHex(salt)+ Encodes.encodeHex(hashPassword));
+    }
+
+    /**
+     * 批量修改用户密码
+     */
+    @Transactional(readOnly = false)
+    public void initUserPassword(){
+        String entryptPassword = SystemService.entryptPassword("123456");
+        userDao.updateNoPwdUser(entryptPassword);
+    }
+
+    /**
+     * 禁止用户登录
+     * @param user
+     */
+    public void resetUserLogin(User user) {
+        userDao.updateLoginDisabled(user);
+        UserUtils.clearCache(user);
+    }
+
+    //=========== Role Service ===========
+
+    public Role getRole(String id) {
+        return roleDao.get(id);
+    }
+
+    public Role getRoleByName(String name) {
+        Role r = new Role();
+        r.setName(name);
+        return roleDao.getByName(r);
+    }
+
+    public Role getRoleByEnname(String enname) {
+        Role r = new Role();
+        r.setEnname(enname);
+        return roleDao.getByEnname(r);
+    }
+
+    public List<Role> findRole(Role role){
+        return roleDao.findList(role);
+    }
+
+    public List<Role> findAllRole(){
+        return UserUtils.getRoleList();
+    }
+
+    @Transactional(readOnly = false)
+    public void saveRole(Role role) {
+        if (StringUtils.isBlank(role.getId())){
+            role.preInsert();
+            roleDao.insert(role);
+        }else{
+            role.preUpdate();
+            roleDao.update(role);
+        }
+        // 更新角色与菜单关联
+        roleDao.deleteRoleMenu(role);
+        if (role.getMenuList().size() > 0){
+            roleDao.insertRoleMenu(role);
+        }
+        // 更新角色与部门关联
+        roleDao.deleteRoleOffice(role);
+        if (role.getOfficeList().size() > 0){
+            roleDao.insertRoleOffice(role);
+        }
+        UserUtils.clearCache();
+    }
+
+    @Transactional(readOnly = false)
+    public void saveRoleWithoutMenu(Role role) {
+        if (StringUtils.isBlank(role.getId())){
+            role.preInsert();
+            roleDao.insert(role);
+        }else{
+            role.preUpdate();
+            roleDao.update(role);
+        }
+        UserUtils.clearCache();
+    }
+
+    @Transactional(readOnly = false)
+    public void saveRoleMenu(Role role) {
+        // 更新角色与菜单关联
+        roleDao.deleteRoleMenu(role);
+        if (role.getMenuList().size() > 0){
+            roleDao.insertRoleMenu(role);
+        }
+        UserUtils.clearCache();
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteRole(Role role) {
+        roleDao.delete(role);
+        // 清除用户角色缓存
+        UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
+    }
+
+    @Transactional(readOnly = false)
+    public Boolean outUserInRole(Role role, User user) {
+        List<Role> roles = user.getRoleList();
+        for (Role e : roles){
+            if (e.getId().equals(role.getId())){
+                roles.remove(e);
+                saveUser(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional(readOnly = false)
+    public User assignUserToRole(Role role, User user) {
+        if (user == null){
+            return null;
+        }
+        List<String> roleIds = user.getRoleIdList();
+        if (roleIds.contains(role.getId())) {
+            return null;
+        }
+        user.getRoleList().add(role);
+        saveUser(user);
+        return user;
+    }
+
+    public Office getCompany(String officeId) {
+        return UserUtils.getCompany(officeId);
+    }
+
+    // ========Menu Service ========
+
+    /**
+     * 根据用户id查询所有显示的任务
+     * @param id
+     * @return
+     */
+    public List<Menu> getMenuListByUser(String id){
+
+        List<Menu> menuList = userDao.findMenuListByUser(id);
+
+        return menuList;
+    }
+
+    public Menu getMenu(String id) {
+        return menuDao.get(id);
+    }
+
+    public List<Menu> findAllMenu(){
+        return UserUtils.getMenuList();
+    }
+
+    public List<Menu> findAllMenuTree(Boolean all){
+        return UserUtils.getTreeMenuList(all);
+    }
+
+    @Transactional(readOnly = false)
+    public void saveMenu(Menu menu) {
+
+        // 获取父节点实体
+        menu.setParent(this.getMenu(menu.getParent().getId()));
+
+        // 获取修改前的parentIds，用于更新子节点的parentIds
+        String oldParentIds = menu.getParentIds();
+
+        // 设置新的父节点串
+        menu.setParentIds(menu.getParent().getParentIds()+menu.getParent().getId()+",");
+
+        // 保存或更新实体
+        if (StringUtils.isBlank(menu.getId())){
+            menu.preInsert();
+            menuDao.insert(menu);
+        }else{
+            menu.preUpdate();
+            menuDao.update(menu);
+        }
+
+        // 更新子节点 parentIds
+        Menu m = new Menu();
+        m.setParentIds("%,"+menu.getId()+",%");
+        List<Menu> list = menuDao.findByParentIdsLike(m);
+        for (Menu e : list){
+            e.setParentIds(e.getParentIds().replace(oldParentIds, menu.getParentIds()));
+            menuDao.updateParentIds(e);
+        }
+        // 清除用户菜单缓存
+        UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
+        UserUtils.removeCache(UserUtils.CACHE_TREE_MENU_LIST);
+    }
+
+    @Transactional(readOnly = false)
+    public void updateMenuSort(Menu menu) {
+        menuDao.updateSort(menu);
+        // 清除用户菜单缓存
+        UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteMenu(Menu menu) {
+        menuDao.delete(menu);
+        // 清除用户菜单缓存
+        UserUtils.removeCache(UserUtils.CACHE_MENU_LIST);
+    }
+
+    /**
+     * 获取Key加载信息
+     */
+    public static boolean printKeyLoadMessage(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\r\n======================================================================\r\n");
+        sb.append("\r\n    欢迎使用 "+ Global.getConfig("productEnName")+"  - Powered By IMS\r\n");
+        sb.append("\r\n======================================================================\r\n");
+        System.out.println(sb.toString());
+        return true;
+    }
+
 }

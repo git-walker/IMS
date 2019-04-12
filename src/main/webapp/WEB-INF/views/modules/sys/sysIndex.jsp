@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<title>${fns:getConfig('productName')}</title>
+	<title>${fns:getConfig('productEnName')}</title>
 
 	<meta http-equiv="progma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
@@ -39,7 +39,14 @@
 			<!-- 	<img src="${ctxStatic}/assets/avatars/user.jpg" alt="${fns:getUser().name}" />   -->
 			</button>
 
-			<div class="navbar-header pull-left"><div class="brand"><img alt="" src="${pageContext.request.contextPath}/static/images/logo.png"/></div></div>
+			<div class="navbar-header pull-left">
+				<div class="navbar-brand">
+					<small>
+						<i class="fa fa-leaf"></i>
+						${fns:getConfig('productEnName')}${fns:getConfig('productZhName')}
+					</small>
+				</div>
+			</div>
 
 			<div class="navbar-buttons navbar-header pull-right collapse navbar-collapse " role="navigation">
 					<ul class="nav ace-nav">
@@ -129,38 +136,7 @@
 			<script type="text/javascript">
 				try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
 			</script>
-			<!--<div class="sidebar-shortcuts" id="sidebar-shortcuts">
-				<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-					<button class="btn btn-success">
-						<i class="ace-icon fa fa-signal"></i>
-					</button>
 
-					<button class="btn btn-info">
-						<i class="ace-icon fa fa-pencil"></i>
-					</button>-->
-
-					<!-- #section:basics/sidebar.layout.shortcuts -->
-					<!--<button class="btn btn-warning">
-						<i class="ace-icon fa fa-users"></i>
-					</button>
-
-					<button class="btn btn-danger">
-						<i class="ace-icon fa fa-cogs"></i>
-					</button>-->
-
-					<!-- /section:basics/sidebar.layout.shortcuts -->
-				<!-- </div>-->
-
-			<!--	<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-					<span class="btn btn-success"></span>
-
-					<span class="btn btn-info"></span>
-
-					<span class="btn btn-warning"></span>
-
-					<span class="btn btn-danger"></span>
-				</div>
-			</div>--> <!-- /.sidebar-shortcuts -->
 			<ul class="nav nav-list" id="sidebar-container">
 				<c:forEach items="${menuList}" var="parent" varStatus="idxStatus">
 					<c:if test="${parent.parent.id eq '1'&&  parent.isShow eq '1'}">
@@ -230,17 +206,9 @@
 						</li>
 					</ul>
 
-					<!--<div class="nav-search" id="nav-search">
-						<form class="form-search">
-							<span class="input-icon">
-								<input placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" type="text">
-								<i class="ace-icon fa fa-search nav-search-icon"></i>
-							</span>
-						</form>
-					</div>-->
 				</div>
 
-			    <div class="page-content l2m-no-header no-padding-bottom">
+			    <div class="page-content ims-no-header no-padding-bottom">
 			    <!-- #section:settings.box -->
 						<div class="ace-settings-container" id="ace-settings-container" style="z-index: 999">
 							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
@@ -320,85 +288,61 @@
 								</div><!-- /.pull-left -->
 							</div><!-- /.ace-settings-box -->
 						</div><!-- /.ace-settings-container -->
-						<div id="meetingQrCode" style="width:0px;">
-							<div id="toggle" onclick="toggleQr()"><i class="ace-icon fa fa-pencil-square-o bigger-130 white"></i></div>
-							<div id="qrContent">
-								<div id="meetingTitle" style="text-align: center;"></div>
-								<div id="qrcode"></div>
-							</div>
-						</div>
 						<!-- /section:settings.box -->
 						<div class="page-content-area" data-ajax-content="true">
 							<!-- ajax content goes here -->
 						</div><!-- /.page-content-area -->
 
-			      <!-- <div class="row">
-			        <div class="col-xs-12">
-			          <iframe id="mainFrame" name="mainFrame" src="" style="overflow:visible;" scrolling="yes" frameborder="no" width="100%" height="600"></iframe>
-			        </div>
-			      </div> -->
-
 			    </div><!-- /.page-content -->
 		  	</div>
 	  	</div><!-- /.main-content -->
 
-
-
-		<!-- <div class="footer">
-		    <div class="footer-inner">
-		        <div class="footer-content">
-					<span class="bigger-120">
-						<span class="blue bolder">IMS</span>
-						进销存管理系统 © 2018-2019
-					</span>
-		        </div>
-		    </div>
-		</div> -->
+		<div class="footer">
+			<div class="footer-inner">
+				<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">${fns:getConfig('productEnName')}</span>
+							${fns:getConfig('productZhName')} &copy; ${fns:getConfig('copyrightYear')}
+						</span>
+				</div>
+			</div>
+		</div>
 
 		<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 			<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 		</a>
 	</div>
-
-  	<!--[if gte IE 9]> -->
-		<script type="text/javascript">
-			window.jQuery || document.write("<script src='${ctxStatic}/assets/js/jquery.js'>"+"<"+"/script>");
-		</script>
+	<!--[if gte IE 9]> -->
+	<script type="text/javascript">
+	window.jQuery || document.write("<script src='${ctxStatic}/jquery/jquery-2.1.1.js'>"+"<"+"/script>");
+	</script>
 	<!-- <![endif]-->
-
 	<!--[if !IE]> -->
-		<script type="text/javascript">
-			window.jQuery || document.write("<script src='${ctxStatic}/assets/js/jquery.js'>"+"<"+"/script>");
-		</script>
+	<script type="text/javascript">
+	window.jQuery || document.write("<script src='${ctxStatic}/jquery/jquery-2.1.1.js'>"+"<"+"/script>");
+	</script>
 	<!-- <![endif]-->
-
 	<!--[if lt IE 9]>
-		<script type="text/javascript">
-		 window.jQuery || document.write("<script src='${ctxStatic}/assets/js/jquery1x.js'>"+"<"+"/script>");
-		</script>
+	<script type="text/javascript">
+	window.jQuery || document.write("<script src='${ctxStatic}/jquery/jquery-1.11.1.js'>"+"<"+"/script>");
+	</script>
 	<![endif]-->
-		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<script src='${ctxStatic}/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
-		</script>
-		<script src="${ctxStatic}/assets/js/bootstrap.js"></script>
+	<script type="text/javascript">
+	if('ontouchstart' in document.documentElement) document.write("<script src='${ctxStatic}/jquery/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+	</script>
+	<script src="${ctxStatic}/bootstrap-3.3.1/js/bootstrap.js"></script>
+	<!--[if lte IE 8]>
+	<script src="${ctxStatic}/assets/js/excanvas.min.js"></script>
+	<![endif]-->
+	<script src="${ctxStatic}/jquery-form/jquery.form.js"></script>
+	<script src="${ctxStatic}/jqGrid/jquery.jqGrid.js"></script>
+	<script src="${ctxStatic}/jqGrid/i18n/grid.locale-cn.js"></script>
 
-		<!--[if lte IE 8]>
-		  <script src="${ctxStatic}/assets/js/excanvas.js"></script>
-		<![endif]-->
-
-
-		<script src="${ctxStatic}/jquery-validation/1.11.0/lib/jquery.form.js"></script>
-		<script src="${ctxStatic}/assets/js/jqGrid/jquery.jqGrid.js"></script>
-		<script src="${ctxStatic}/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
-
-
-<script src="${ctxStatic}/assets/js/select2.js" type="text/javascript"></script>
-<script type="text/javascript" src="${ctxStatic}/assets/js/bootstrapValidator.js"></script>
-<link href="${ctxStatic}/jquery-jbox/2.3/Skins/Bootstrap/jbox.min.css" rel="stylesheet" />
-<script src="${ctxStatic}/jquery-jbox/2.3/jquery.jBox-2.3.min.js" type="text/javascript"></script>
-<!-- <link href="${ctxStatic}/common/jeesite.min.css" type="text/css" rel="stylesheet" /> -->
-<script src="${ctxStatic}/common/jeesite.min.js" type="text/javascript"></script>
-<%-- <script src="${ctxStatic}/modules/sys/js/plug-in.js" type="text/javascript"></script> --%>
+	<script src="${ctxStatic}/assets/js/select2.js"></script>
+	<script src="${ctxStatic}/assets/js/bootstrapValidator.js"></script>
+	<link href="${ctxStatic}/jquery-jbox/2.3/Skins/Bootstrap/jbox.min.css" type="text/css" rel="stylesheet" />
+	<script src="${ctxStatic}/jquery-jbox/2.3/jquery.jBox-2.3.min.js"></script>
+	<script src="${ctxStatic}/common/jeesite.min.js"></script>
 	<!-- ace scripts -->
 	<script src="${ctxStatic}/assets/js/ace/elements.scroller.js"></script>
 	<script src="${ctxStatic}/assets/js/ace/elements.colorpicker.js"></script>
@@ -421,23 +365,25 @@
 	<script src="${ctxStatic}/assets/js/ace/ace.settings-skin.js"></script>
 	<script src="${ctxStatic}/assets/js/ace/ace.widget-on-reload.js"></script>
 	<script src="${ctxStatic}/assets/js/ace/ace.searchbox-autocomplete.js"></script>
+
 	<script src="${ctxStatic}/layui-2.4.5/layui.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery-ui.custom.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery-ui.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.ui.touch-punch.js"></script>
-	<script src="${ctxStatic}/assets/js/chosen.jquery.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.autosize.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.inputlimiter.1.3.1.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.maskedinput.js"></script>
-	<script src="${ctxStatic}/assets/js/bootstrap-tag.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.easypiechart.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.sparkline.js"></script>
-	<script src="${ctxStatic}/assets/js/flot/jquery.flot.js"></script>
-	<script src="${ctxStatic}/assets/js/flot/jquery.flot.pie.js"></script>
-	<script src="${ctxStatic}/assets/js/flot/jquery.flot.resize.js"></script>
-	<script src="${ctxStatic}/assets/js/jquery.gritter.js"></script>
+	<script src="${ctxStatic}/chosen/js/chosen.jquery.min.js"></script>
+
+	<script src="${ctxStatic}/assets/js/jquery-ui.custom.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery-ui.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.ui.touch-punch.min.js"></script>
+
+	<script src="${ctxStatic}/assets/js/autosize.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.inputlimiter.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.maskedinput.min.js"></script>
+	<script src="${ctxStatic}/assets/js/bootstrap-tag.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.easypiechart.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.sparkline.index.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.flot.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.flot.pie.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.flot.resize.min.js"></script>
+	<script src="${ctxStatic}/assets/js/jquery.gritter.min.js"></script>
 	<script src="${ctxStatic}/assets/js/bootbox.js"></script>
-	<%-- <script src="${ctxStatic}/assets/js/ajaxfileupload.js"></script> --%>
 
 	<script type="text/javascript">
 		$(document).ready(function() {

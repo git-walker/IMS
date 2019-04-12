@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2005-2012 springside.org.cn
- */
 package cn.rootyu.rad.common.utils;
 
 import org.apache.commons.codec.DecoderException;
@@ -18,8 +15,6 @@ import java.net.URLEncoder;
  * 2.自制的base62 编码
  * 3.Commons-Lang的xml/html escape
  * 4.JDK提供的URLEncoder
- * @author calvin
- * @version 2013-01-15
  */
 public class Encodes {
 
@@ -61,13 +56,6 @@ public class Encodes {
 			return "";
 		}
 	}
-
-//	/**
-//	 * Base64编码, URL安全(将Base64中的URL非法字符'+'和'/'转为'-'和'_', 见RFC3548).
-//	 */
-//	public static String encodeUrlSafeBase64(byte[] input) {
-//		return Base64.encodeBase64URLSafe(input);
-//	}
 
 	/**
 	 * Base64解码.

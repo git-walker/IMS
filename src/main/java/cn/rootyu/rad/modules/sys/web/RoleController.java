@@ -1,10 +1,6 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.web;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.Page;
 import cn.rootyu.rad.common.utils.Collections3;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.web.BaseController;
@@ -211,7 +207,7 @@ public class RoleController extends BaseController {
 	@ResponseBody
 	public Map<String,Object> assignList(Role role, HttpServletRequest request, HttpServletResponse response) {
 
-		List<User> userList = systemService.findUser(new User(new Role(role.getId())));
+		List<User> userList = systemService.findAllUser(new User(new Role(role.getId())));
         Map<String,Object> returnMap = new HashMap<String,Object>();
         returnMap.put("rows", userList);
         return returnMap;
@@ -226,7 +222,7 @@ public class RoleController extends BaseController {
 	@RequiresPermissions("sys:role:view")
 	@RequestMapping(value = "usertorole")
 	public String selectUserToRole(Role role, Model model) {
-		List<User> userList = systemService.findUser(new User(new Role(role.getId())));
+		List<User> userList = systemService.findAllUser(new User(new Role(role.getId())));
 		List<Office> userList2 = officeService.findAll();
 		model.addAttribute("role", role);
 		model.addAttribute("userList", userList);
@@ -248,8 +244,9 @@ public class RoleController extends BaseController {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
 		User user = new User();
 		user.setOffice(new Office(officeId));
-		Page<User> page = systemService.findUser(new Page<User>(1, -1), user);
-		for (User e : page.getList()) {
+		//LayuiPageInfo<User> page = systemService.findUser(user);
+		List<User> list = systemService.findAllUser(user);
+		for (User e : list) {
 			Map<String, Object> map = Maps.newHashMap();
 			map.put("id", e.getId());
 			map.put("pId", 0);
@@ -339,8 +336,8 @@ public class RoleController extends BaseController {
 
 	/**
 	 * 验证角色英文名是否有效
-	 * @param oldName
-	 * @param name
+	 * @param oldEnname
+	 * @param enname
 	 * @return
 	 */
 	@RequiresPermissions("user")
@@ -357,7 +354,7 @@ public class RoleController extends BaseController {
 	
 	/**
 	 * 验证角色名称是否被占用
-	 * @param enname
+	 * @param name
 	 * @param id
 	 * @return
 	 */

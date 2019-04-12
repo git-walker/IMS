@@ -4,11 +4,6 @@
 <link href="${ctxStatic}/treeTable/themes/vsStyle/treeTable.min.css" rel="stylesheet" type="text/css" />
 <link href="${ctxStatic}/bootstrap-treeview/css/bootstrap-treeview.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="${ctxStatic}/assets/css/shade.css" />
-	<%-- <ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/sys/menu/">菜单列表</a></li>
-		<shiro:hasPermission name="sys:menu:edit"><li><a href="${ctx}/sys/menu/form">菜单添加</a></li></shiro:hasPermission>
-	</ul> --%>
-	<%-- <sys:message content="${message}"/> --%>
 	<div class="row">
 		<div class="col-xs-12">
 			<table id="treeTable" class="table table-striped table-bordered table-condensed">
@@ -38,6 +33,9 @@
 			</table>
 			<div class="widget-box" style="display:none" id="editDivId">
 			</div>
+			<div id="selectIconDiv" class="hide widget-body"></div>
+			<div id="over" class="over"></div>
+			<div id="layout" class="layout"><img src="${ctxStatic}/images/loading.gif" style="max-height:100px;max-width:100px;"></div>
 			<div id="load"  vertical-align="middle" style="z-index:9999;" >
 			<span style="width:100%;position:absolute;top:40%;" align="center">
 				<img src="${ctxStatic}/images/loading5.gif" width="50" height="50" align="absmiddle" style="vertical-align:middle;"/>
@@ -48,8 +46,11 @@
 	 <!-- page specific plugin scripts -->
 	<script src="${ctxStatic}/assets/js/shade.js"></script>
 	<script type="text/javascript">
-		var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js','${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',
-		               '${ctxStatic}/assets/js/x-editable/bootstrap-editable.js','${ctxStatic}/assets/js/x-editable/ace-editable.js','${ctxStatic}/assets/js/fuelux/fuelux.spinner.js',null];
+        var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js',
+			'${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',
+            '${ctxStatic}/assets/js/x-editable/bootstrap-editable.js',
+			'${ctxStatic}/assets/js/x-editable/ace-editable.js',
+			'${ctxStatic}/assets/js/fuelux/fuelux.spinner.js',null];
 		$('.page-content-area').ace_ajax('loadScripts', scripts, function() {
 
 			jQuery(function($) {
@@ -204,6 +205,8 @@
                                 e.preventDefault();
 
                                 $.post('${ctx}/sys/menu/iconselect', {}, function (data, textStatus, object) {
+                                    document.getElementById("over").style.display = "none";
+                                    document.getElementById("layout").style.display = "none";
                                     var $selectIconDiv = $("#selectIconDiv");
                                     $selectIconDiv.html(object.responseText).removeClass('hide').dialog({
                                         modal: true,
@@ -217,6 +220,7 @@
                                                 "class": "btn btn-minier",
                                                 click: function () {
                                                     $(this).dialog("destroy");
+                                                    $(this).addClass('hide');
                                                 }
                                             }
                                         ],

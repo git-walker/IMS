@@ -1,10 +1,6 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.security;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.servlet.ValidateCodeServlet;
 import cn.rootyu.rad.common.utils.Encodes;
 import cn.rootyu.rad.common.utils.SpringContextHolder;
 import cn.rootyu.rad.modules.sys.entity.Menu;
@@ -12,7 +8,6 @@ import cn.rootyu.rad.modules.sys.entity.Role;
 import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.service.SystemService;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
-import cn.rootyu.rad.modules.sys.web.LoginController;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -37,8 +32,8 @@ import java.util.List;
 
 /**
  * 系统安全认证实现类
- * @author DHC
- * @version 2014-7-5
+ * @author yuhui
+ * @version 1.0
  */
 @Service
 public class SystemAuthorizingRealm extends AuthorizingRealm {
@@ -53,21 +48,12 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		
+
 		int activeSessionSize = getSystemService().getSessionDao().getActiveSessions(false).size();
 		if (logger.isDebugEnabled()){
 			logger.debug("login submit, active session size: {}, username: {}", activeSessionSize, token.getUsername());
 		}
-		
-		// 校验登录验证码
-		if (LoginController.isValidateCodeLogin(token.getUsername(), false, false)){
-			Session session = UserUtils.getSession();
-			String code = (String)session.getAttribute(ValidateCodeServlet.VALIDATE_CODE);
-			/*if (token.getCaptcha() == null || !token.getCaptcha().toUpperCase().equals(code)){
-				throw new AuthenticationException("msg:验证码错误, 请重试.");
-			}*/
-		}
-		
+
 		// 校验用户名密码
 		User user = getSystemService().getUserByLoginName(token.getUsername());
 		if (user != null) {
@@ -75,7 +61,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 				throw new AuthenticationException("msg:该已帐号禁止登录.");
 			}
 			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
-			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()), 
+			return new SimpleAuthenticationInfo(new Principal(user),
 					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
@@ -87,6 +73,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+
 		Principal principal = (Principal) getAvailablePrincipal(principals);
 		// 获取当前已登录的用户
 		if (!Global.TRUE.equals(Global.getConfig("user.multiAccountLogin"))){
@@ -125,8 +112,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			}
 			// 更新登录IP和时间
 			getSystemService().updateUserLoginInfo(user);
-			// 记录登录日志
-//			LogUtils.saveLog(Servlets.getRequest(), "系统登录");
 			return info;
 		} else {
 			return null;
@@ -172,7 +157,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	private void authorizationValidate(Permission permission){
 		// 模块授权预留接口
 	}
-	
+
 	/**
 	 * 设定密码校验的Hash算法与迭代次数
 	 */
@@ -182,28 +167,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		matcher.setHashIterations(SystemService.HASH_INTERATIONS);
 		setCredentialsMatcher(matcher);
 	}
-	
-//	/**
-//	 * 清空用户关联权限认证，待下次使用时重新加载
-//	 */
-//	public void clearCachedAuthorizationInfo(Principal principal) {
-//		SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
-//		clearCachedAuthorizationInfo(principals);
-//	}
-
-	/**
-	 * 清空所有关联认证
-	 * @Deprecated 不需要清空，授权缓存保存到session中
-	 */
-//	@Deprecated
-//	public void clearAllCachedAuthorizationInfo() {
-////		Cache<Object, AuthorizationInfo> cache = getAuthorizationCache();
-////		if (cache != null) {
-////			for (Object key : cache.keys()) {
-////				cache.remove(key);
-////			}
-////		}
-//	}
 
 	/**
 	 * 获取系统业务对象
@@ -225,14 +188,12 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		private String id; // 编号
 		private String loginName; // 登录名
 		private String name; // 姓名
-		private boolean mobileLogin; // 是否手机登录
 
 
-		public Principal(User user, boolean mobileLogin) {
+		public Principal(User user) {
 			this.id = user.getId();
 			this.loginName = user.getLoginName();
 			this.name = user.getName();
-			this.mobileLogin = mobileLogin;
 		}
 
 		public String getId() {
@@ -247,9 +208,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			return name;
 		}
 
-		public boolean isMobileLogin() {
-			return mobileLogin;
-		}
 
 		/**
 		 * 获取SESSIONID

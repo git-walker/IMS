@@ -17,8 +17,6 @@ import java.io.IOException;
 
 /**
  * 用户工具类
- * @author 李俊杰
- * @version 2016-3-16
  */
 public class PhotoUtils {
 

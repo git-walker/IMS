@@ -49,8 +49,11 @@
 <!-- page specific plugin scripts -->
 <script src="${ctxStatic}/assets/js/shade.js"></script>
 <script type="text/javascript">
-    var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js', '${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',
-        '${ctxStatic}/assets/js/x-editable/bootstrap-editable.js', '${ctxStatic}/assets/js/x-editable/ace-editable.js', '${ctxStatic}/assets/js/fuelux/fuelux.spinner.js', null];
+    var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js',
+        '${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',
+        '${ctxStatic}/assets/js/x-editable/bootstrap-editable.js',
+        '${ctxStatic}/assets/js/x-editable/ace-editable.js',
+        '${ctxStatic}/assets/js/fuelux/fuelux.spinner.js',null];
     $('.page-content-area').ace_ajax('loadScripts', scripts, function () {
 
         jQuery(function ($) {

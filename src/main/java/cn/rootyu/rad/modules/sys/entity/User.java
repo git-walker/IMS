@@ -1,10 +1,7 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.entity;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.DataEntity;
+import cn.rootyu.rad.common.entity.DataEntity;
 import cn.rootyu.rad.common.utils.Collections3;
 import cn.rootyu.rad.common.utils.excel.annotation.ExcelField;
 import cn.rootyu.rad.common.utils.excel.fieldtype.RoleListType;
@@ -20,8 +17,8 @@ import java.util.List;
 
 /**
  * 用户Entity
- * @author DHC
- * @version 2013-12-05
+ * @author yuhui
+ * @version 1.0
  */
 public class User extends DataEntity<User> {
 

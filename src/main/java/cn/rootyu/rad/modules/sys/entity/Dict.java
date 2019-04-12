@@ -1,9 +1,6 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.entity;
 
-import cn.rootyu.rad.common.persistence.DataEntity;
+import cn.rootyu.rad.common.entity.DataEntity;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
@@ -11,8 +8,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * 字典Entity
- * @author DHC
- * @version 2013-05-15
+ * @author yuhui
+ * @version 1.0
  */
 public class Dict extends DataEntity<Dict> {
 

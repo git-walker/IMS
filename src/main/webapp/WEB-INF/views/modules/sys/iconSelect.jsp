@@ -4132,18 +4132,3 @@
 		</section>
 	</div>
 </div>
-<%--<script type="text/javascript">--%>
-	<%--var scripts = [];--%>
-	<%--$('.page-content-area').ace_ajax('loadScripts', scripts, function () {--%>
-		<%--jQuery(function ($) {--%>
-
-			<%--$("#icons .fa-hover a").dblclick(function () {--%>
-				<%--var icon = $(this).find('i').attr('class');--%>
-				<%--top.layerForm.vm.menu.icon = icon;--%>
-				<%--dialogClose();--%>
-			<%--})--%>
-
-
-		<%--});--%>
-	<%--});--%>
-<%--</script>--%>

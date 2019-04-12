@@ -69,30 +69,30 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="control-label col-xs-12 col-sm-2 no-padding" for="isMobile">手机菜单:</label>
-			<div class="col-xs-12 col-sm-10">
-				<div class="clearfix">
-					<label>
-						<input id="isMobile" name="isMobile" ${menu.isMobile=='0'?'checked':''} class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />
-						<span class="lbl"></span>
-					</label>
-					
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-xs-12 col-sm-2 no-padding" for="taskFlag">显示任务:</label>
-			<div class="col-xs-12 col-sm-10">
-				<div class="clearfix">
-					<label>
-						<input id="taskFlag" name="taskFlag" ${menu.taskFlag=='1'?'checked':''} class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />
-						<span class="lbl"></span>
-					</label>
-					
-				</div>
-			</div>
-		</div>
+		<%--<div class="form-group">--%>
+			<%--<label class="control-label col-xs-12 col-sm-2 no-padding" for="isMobile">手机菜单:</label>--%>
+			<%--<div class="col-xs-12 col-sm-10">--%>
+				<%--<div class="clearfix">--%>
+					<%--<label>--%>
+						<%--<input id="isMobile" name="isMobile" ${menu.isMobile=='0'?'checked':''} class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />--%>
+						<%--<span class="lbl"></span>--%>
+					<%--</label>--%>
+					<%----%>
+				<%--</div>--%>
+			<%--</div>--%>
+		<%--</div>--%>
+		<%--<div class="form-group">--%>
+			<%--<label class="control-label col-xs-12 col-sm-2 no-padding" for="taskFlag">显示任务:</label>--%>
+			<%--<div class="col-xs-12 col-sm-10">--%>
+				<%--<div class="clearfix">--%>
+					<%--<label>--%>
+						<%--<input id="taskFlag" name="taskFlag" ${menu.taskFlag=='1'?'checked':''} class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />--%>
+						<%--<span class="lbl"></span>--%>
+					<%--</label>--%>
+					<%----%>
+				<%--</div>--%>
+			<%--</div>--%>
+		<%--</div>--%>
 		<div class="form-group">
 			<label class="control-label col-xs-12 col-sm-2 no-padding" for="permission">权限标识:</label>
 			<div class="col-xs-12 col-sm-10">

@@ -1,8 +1,9 @@
 package cn.rootyu.rad.modules.sys.web;
 
+import cn.rootyu.ims.common.entity.LayuiPageInfo;
+import cn.rootyu.ims.common.utils.CommonUtil;
 import cn.rootyu.rad.common.beanvalidator.BeanValidators;
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.Page;
 import cn.rootyu.rad.common.utils.DateUtils;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.utils.excel.ExportExcel;
@@ -69,28 +70,33 @@ public class UserController extends BaseController {
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
+		LayuiPageInfo<User> page = systemService.findUser(request,response,user);
 		model.addAttribute("page", page);
 		return "modules/sys/userList";
 	}
-	
+
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = {"searchPage"})
 	@ResponseBody
-	public Map<String,Object> searchPage(User user, HttpServletRequest request, HttpServletResponse response) {
-		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
-		Map<String,Object> returnMap = new HashMap<String,Object>();
-		returnMap.put("total", page.getTotalPage());
-		returnMap.put("pageNo", page.getPageNo());
-		returnMap.put("records", page.getCount());
-		//String result = JsonMapper.toJsonString(page.getList());
-		returnMap.put("rows", page.getList());
-		return returnMap;
+	public LayuiPageInfo searchPage(User user, @RequestBody Map<String,Object> params, HttpServletRequest request, HttpServletResponse response) {
+		CommonUtil.startPage(params);
+		LayuiPageInfo<User> pageInfo = null;
+		Office office=new Office();
+		office.setId((String)params.get("office.id"));
+		user.setOffice(office);
+		user.setName((String)params.get("name"));
+		user.setLoginName((String)params.get("loginName"));
+		try{
+			pageInfo=systemService.findUser(request,response,user);
+		}catch (Exception e){
+			logger.error(e.getMessage(),e);
+		}
+		return pageInfo;
 	}
 
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = "form")
-	public String form(User user, HttpServletRequest request, Model model) {
+	public String form(User user,HttpServletRequest request, Model model) {
 		//update by maliang 页面请求先执行上面的get方法，返回user对象，此时user内的部门从数据库中查询
 		//是正确的，放入缓存中，随后页面传来的office.id和office.name覆盖user对象中的相应属性，缓存中的user也被改变，导致此bug。
 		//这里有安全隐患，页面传入的如果和对象匹配，可随意修改缓存中的值。
@@ -370,11 +376,12 @@ public class UserController extends BaseController {
 	 */
 	@RequiresPermissions("sys:user:view")
     @RequestMapping(value = "export", method=RequestMethod.POST)
+	//TODO
     public String exportFile(User user, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "用户数据"+ DateUtils.getDate("yyyyMMddHHmmss")+".xlsx";
-            Page<User> page = systemService.findUser(new Page<User>(request, response, -1), user);
-    		new ExportExcel("用户数据", User.class).setDataList(page.getList()).write(response, fileName).dispose();
+            List<User> list = systemService.findAllUser(user);
+    		new ExportExcel("用户数据", User.class).setDataList(list).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出用户失败！失败信息："+e.getMessage());

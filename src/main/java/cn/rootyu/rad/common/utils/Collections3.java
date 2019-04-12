@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2005-2012 springside.org.cn
- */
 package cn.rootyu.rad.common.utils;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -11,8 +8,6 @@ import java.util.*;
 /**
  * Collections工具集.
  * 在JDK的Collections和Guava的Collections2后, 命名为Collections3.
- * @author calvin
- * @version 2013-01-15
  */
 @SuppressWarnings("rawtypes")
 public class Collections3 {

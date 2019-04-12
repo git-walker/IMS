@@ -1,10 +1,7 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.service;
 
-import cn.rootyu.rad.common.persistence.TreeDao;
-import cn.rootyu.rad.common.persistence.TreeEntity;
+import cn.rootyu.rad.common.dao.TreeDao;
+import cn.rootyu.rad.common.entity.TreeEntity;
 import cn.rootyu.rad.common.utils.Reflections;
 import cn.rootyu.rad.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +10,8 @@ import java.util.List;
 
 /**
  * Service基类
- * @author DHC
- * @version 2014-05-16
+ * @author yuhui
+ * @version 1.0
  */
 @Transactional(readOnly = true)
 public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>> extends CrudService<D, T> {
@@ -25,7 +22,7 @@ public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>>
 		@SuppressWarnings("unchecked")
 		Class<T> entityClass = Reflections.getClassGenricType(getClass(), 1);
 		
-		// 如果没有设置父节点，则代表为跟节点，有则获取父节点实体
+		// 如果没有设置父节点，则代表为根节点，有则获取父节点实体
 		if (entity.getParent() == null || StringUtils.isBlank(entity.getParentId())
 				|| "0".equals(entity.getParentId())){
 			entity.setParent(null);
@@ -37,7 +34,7 @@ public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>>
 			try {
 				parentEntity = entityClass.getConstructor(String.class).newInstance("0");
 			} catch (Exception e) {
-				throw new ServiceException(e);
+				throw new RuntimeException(e);
 			}
 			entity.setParent(parentEntity);
 			entity.getParent().setParentIds(StringUtils.EMPTY);
@@ -57,7 +54,7 @@ public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>>
 		try {
 			o = entityClass.newInstance();
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new RuntimeException(e);
 		}
 		o.setParentIds("%,"+entity.getId()+",%");
 		List<T> list = dao.findByParentIdsLike(o);

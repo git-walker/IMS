@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.security;
 
 import cn.rootyu.rad.common.utils.StringUtils;
@@ -16,19 +13,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 表单验证（包含验证码）过滤类
- * @author DHC
- * @version 2014-5-19
+ * 表单验证过滤类
+ * @author yuhui
+ * @version 1.0
  */
 @Service
 public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.FormAuthenticationFilter {
 
-	public static final String DEFAULT_CAPTCHA_PARAM = "validateCode";
-	public static final String DEFAULT_MOBILE_PARAM = "mobileLogin";
 	public static final String DEFAULT_MESSAGE_PARAM = "message";
 
-	private String captchaParam = DEFAULT_CAPTCHA_PARAM;
-	private String mobileLoginParam = DEFAULT_MOBILE_PARAM;
 	private String messageParam = DEFAULT_MESSAGE_PARAM;
 
 	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
@@ -39,47 +32,24 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 		}
 		boolean rememberMe = isRememberMe(request);
 		String host = StringUtils.getRemoteAddr((HttpServletRequest)request);
-		String captcha = getCaptcha(request);
-		boolean mobile = isMobileLogin(request);
-		return new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile);
+		return new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host);
 	}
 
-	public String getCaptchaParam() {
-		return captchaParam;
-	}
-
-	protected String getCaptcha(ServletRequest request) {
-		return WebUtils.getCleanParam(request, getCaptchaParam());
-	}
-
-	public String getMobileLoginParam() {
-		return mobileLoginParam;
-	}
-	
-	protected boolean isMobileLogin(ServletRequest request) {
-        return WebUtils.isTrue(request, getMobileLoginParam());
-    }
-	
 	public String getMessageParam() {
 		return messageParam;
 	}
-	
+
 	/**
 	 * 登录成功之后跳转URL
 	 */
 	public String getSuccessUrl() {
 		return super.getSuccessUrl();
 	}
-	
+
 	@Override
 	protected void issueSuccessRedirect(ServletRequest request,
-			ServletResponse response) throws Exception {
-//		Principal p = UserUtils.getPrincipal();
-//		if (p != null && !p.isMobileLogin()){
-			 WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
-//		}else{
-//			super.issueSuccessRedirect(request, response);
-//		}
+										ServletResponse response) throws Exception {
+		WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
 	}
 
 	/**
@@ -87,7 +57,7 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 	 */
 	@Override
 	protected boolean onLoginFailure(AuthenticationToken token,
-			AuthenticationException e, ServletRequest request, ServletResponse response) {
+									 AuthenticationException e, ServletRequest request, ServletResponse response) {
 		String className = e.getClass().getName(), message = "";
 		if (IncorrectCredentialsException.class.getName().equals(className)
 				|| UnknownAccountException.class.getName().equals(className)){
@@ -100,9 +70,9 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 			message = "系统出现点问题，请稍后再试！";
 			e.printStackTrace(); // 输出到控制台
 		}
-        request.setAttribute(getFailureKeyAttribute(), className);
-        request.setAttribute(getMessageParam(), message);
-        return true;
+		request.setAttribute(getFailureKeyAttribute(), className);
+		request.setAttribute(getMessageParam(), message);
+		return true;
 	}
 	
 }

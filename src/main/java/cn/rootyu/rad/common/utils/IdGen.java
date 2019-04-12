@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.utils;
 
 import org.apache.shiro.session.Session;
@@ -12,9 +9,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * 封装各种生成唯一性ID算法的工具类.
- * @author DHC
- * @version 2013-01-15
+ * 封装生成唯一性ID算法的工具类.
  */
 @Service
 @Lazy(false)

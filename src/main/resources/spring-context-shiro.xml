@@ -16,21 +16,9 @@
 			<value>
 				/static/** = anon
 				/userfiles/** = anon
-				${adminPath}/qmis/appInspection/download = anon
-				${adminPath}/randomImg = anon
-				${adminPath}/ncr/ncrForm/** = anon
-				${adminPath}/checkIn/** = anon
-				${adminPath}/qmis/check/** = anon
-				${adminPath}/interface/mesInterface/** = anon
-				${adminPath}/incomingsituation/ngm/**=anon
-				${adminPath}/qmis/tools/selectPage/** = anon
-				${adminPath}/cas = cas
 				${adminPath}/login = authc
 				${adminPath}/logout = logout
 				${adminPath}/** = user
-				/act/rest/service/editor/** = perms[act:model:edit]
-				/act/rest/service/model/** = perms[act:model:edit]
-				/act/rest/service/** = user
 				/ReportServer/** = user
 			</value>
 		</constructor-arg>
@@ -41,26 +29,19 @@
 	<!-- Web应用中,Shiro可控制的Web请求必须经过Shiro主过滤器的拦截,Shiro对基于Spring的Web应用提供了完美的支持 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<!-- Shiro的核心安全接口,这个属性是必须的 -->  
-		<property name="securityManager" ref="securityManager" /><!-- 
-		<property name="loginUrl" value="${cas.server.url}?service=${cas.project.url}${adminPath}/cas" /> -->
+		<property name="securityManager" ref="securityManager" />
 		<!-- 要求登录时的链接(可根据项目的URL进行替换) -->  
 		<property name="loginUrl" value="${adminPath}/login" />
 		<!-- 登录成功后要跳转的连接 -->  
 		<property name="successUrl" value="${adminPath}?login" />
 		<property name="filters">
             <map>
-                <entry key="cas" value-ref="casFilter"/>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
             </map>
         </property>
 		<property name="filterChainDefinitions">
 			<ref bean="shiroFilterChainDefinitions"/>
 		</property>
-	</bean>
-	
-	<!-- CAS认证过滤器 -->  
-	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">  
-		<property name="failureUrl" value="${adminPath}/login"/>
 	</bean>
 	
 	<!-- 定义Shiro安全管理配置 -->

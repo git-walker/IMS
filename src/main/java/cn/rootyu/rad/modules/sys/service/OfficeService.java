@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.service;
 
 import cn.rootyu.rad.common.service.TreeService;
@@ -14,8 +11,8 @@ import java.util.List;
 
 /**
  * 机构Service
- * @author DHC
- * @version 2014-05-16
+ * @author yuhui
+ * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
@@ -32,7 +29,7 @@ public class OfficeService extends TreeService<OfficeDao, Office> {
 			return UserUtils.getOfficeList();
 		}
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<Office> findList(Office office){
 		office.setParentIds(office.getParentIds()+"%");
@@ -56,5 +53,4 @@ public class OfficeService extends TreeService<OfficeDao, Office> {
 	public List<Office> getCompanys() {
 		return UserUtils.getCompanys();
 	}
-	
 }

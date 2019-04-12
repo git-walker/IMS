@@ -1,7 +1,7 @@
 package cn.rootyu.rad.modules.sys.entity;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.persistence.DataEntity;
+import cn.rootyu.rad.common.entity.DataEntity;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * 角色Entity
- * @author DHC
- * @version 2013-12-05
+ * @author yuhui
+ * @version 1.0
  */
 public class Role extends DataEntity<Role> {
 	
@@ -29,7 +29,6 @@ public class Role extends DataEntity<Role> {
 	
 	private User user;		// 根据用户ID查询角色列表
 
-//	private List<User> userList = Lists.newArrayList(); // 拥有用户列表
 	private List<Menu> menuList = Lists.newArrayList(); // 拥有菜单列表
 	private List<Office> officeList = Lists.newArrayList(); // 按明细设置数据范围
 
@@ -227,20 +226,4 @@ public class Role extends DataEntity<Role> {
 		this.user = user;
 	}
 
-//	public boolean isAdmin(){
-//		return isAdmin(this.id);
-//	}
-//	
-//	public static boolean isAdmin(String id){
-//		return id != null && "1".equals(id);
-//	}
-	
-//	@Transient
-//	public String getMenuNames() {
-//		List<String> menuNameList = Lists.newArrayList();
-//		for (Menu menu : menuList) {
-//			menuNameList.add(menu.getName());
-//		}
-//		return StringUtils.join(menuNameList, ",");
-//	}
 }

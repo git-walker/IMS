@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.web;
 
 import cn.rootyu.rad.common.config.Global;
@@ -51,13 +48,6 @@ public class OfficeController extends BaseController {
 			return new Office();
 		}
 	}
-
-//	@RequiresPermissions("sys:office:view")
-//	@RequestMapping(value = {""})
-//	public String index(Office office, Model model) {
-//        model.addAttribute("list", officeService.findAll());
-//		return "modules/sys/officeList";
-//	}
 
 	@RequiresPermissions("sys:office:view")
 	@RequestMapping(value = {"list",""})

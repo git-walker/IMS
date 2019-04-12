@@ -15,17 +15,7 @@
 			<!-- 这里的id为office的id -->
 			<id property="id" column="office.id"/>
 			<result property="name" column="office.name"/>
-		</association>  <!--
-		<collection property="userList" ofType="User">
-			<id property="id" column="userList.id" />
-			<id property="loginName" column="userList.loginName" />
-			<id property="name" column="userList.name" />
-			<id property="email" column="userList.email" />
-			<id property="phone" column="userList.phone" />
-			<id property="mobile" column="userList.mobile" />
-			<id property="office.name" column="userList.office.name" />
-			<id property="company.name" column="userList.company.name" />
-		</collection> -->
+		</association>
 		<collection property="menuList" ofType="Menu">
 			<id property="id" column="menuList.id" />
 		</collection>
@@ -55,23 +45,11 @@
     
 	<select id="get" resultMap="roleResult">
 		SELECT
-			<include refid="roleColumns"/>,<!-- 
-			ur.user_id AS "userList.id",
-			u.login_name AS "userList.loginName",
-			u.name AS "userList.name",
-			u.email AS "userList.email",
-			u.phone AS "userList.phone",
-			u.mobile AS "userList.mobile",
-			uc.name AS "userList.company.name",
-			uo.name AS "userList.office.name", -->
+			<include refid="roleColumns"/>,
 			rm.menu_id AS "menuList.id",
 			ro.office_id AS "officeList.id"
 		FROM sys_role a
-		JOIN sys_office o ON o.id = a.office_id<!-- 
-		LEFT JOIN sys_user_role ur ON ur.role_id = a.id
-		LEFT JOIN sys_user u ON u.id = ur.user_id
-		LEFT JOIN sys_office uc ON uc.id = u.company_id
-		LEFT JOIN sys_office uo ON uo.id = u.office_id -->
+		JOIN sys_office o ON o.id = a.office_id
 		LEFT JOIN sys_role_menu rm ON rm.role_id = a.id
 		LEFT JOIN sys_role_office ro ON ro.role_id = a.id
 		WHERE a.id = #{id}
@@ -113,14 +91,7 @@
 		</if>
 		<!-- 数据范围过滤 -->
 		${sqlMap.dsf}
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY o.code, a.name
-			</otherwise>
-		</choose>
+		ORDER BY o.code, a.name
 	</select>
 	
 	<select id="findAllList" resultType="Role">
@@ -129,14 +100,7 @@
 		FROM sys_role a
 		LEFT JOIN sys_office o ON o.id = a.office_id
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY o.code, a.name
-			</otherwise>
-		</choose>
+		ORDER BY o.code, a.name
 	</select>
 	
 	<insert id="insert">

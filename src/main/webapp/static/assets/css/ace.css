@@ -59,7 +59,7 @@ body {
   background-color: #ffffff;
   position: relative;
   margin: 0;
-  padding: 8px 20px 24px;
+  padding: 0px 20px 24px 20px;
 }
 .page-header {
   margin: 0 0 12px;
@@ -8711,7 +8711,7 @@ input[type="color"] {
   color: #858585;
   background-color: #ffffff;
   border: 1px solid #d5d5d5;
-  padding: 5px 4px 6px;
+  padding: 5px 2px 6px 2px;
   font-size: 14px;
   font-family: inherit;
   -webkit-box-shadow: none !important;

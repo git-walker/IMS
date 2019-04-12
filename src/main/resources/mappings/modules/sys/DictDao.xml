@@ -29,19 +29,10 @@
 			AND s.type = #{type}
 		</if>
 		<if test="description != null and description != ''">
-			AND s.description LIKE 
-					<if test="dbName == 'oracle'">'%'||#{description}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{description}, '%')</if>
+			AND s.description LIKE
+					CONCAT('%', #{description}, '%')
 		</if>
-		
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY s.type, s.sort, s.update_date DESC
-			</otherwise>
-		</choose>
+		ORDER BY s.type, s.sort, s.update_date DESC
 	</select>
 	
 	<select id="findAllList" resultType="Dict">

@@ -1,7 +1,5 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.utils;
+
 
 import cn.rootyu.rad.common.service.BaseService;
 import cn.rootyu.rad.common.utils.CacheUtils;
@@ -9,7 +7,6 @@ import cn.rootyu.rad.common.utils.SpringContextHolder;
 import cn.rootyu.rad.modules.sys.dao.*;
 import cn.rootyu.rad.modules.sys.entity.*;
 import cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm;
-import com.google.common.collect.Lists;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
@@ -23,11 +20,10 @@ import java.util.Map;
 
 /**
  * 用户工具类
- * @author DHC
- * @version 2013-12-05
+ * @author yuhui
+ * @version 1.0
  */
 public class UserUtils {
-
 	private static UserDao userDao = SpringContextHolder.getBean(UserDao.class);
 	private static RoleDao roleDao = SpringContextHolder.getBean(RoleDao.class);
 	private static MenuDao menuDao = SpringContextHolder.getBean(MenuDao.class);
@@ -45,7 +41,7 @@ public class UserUtils {
 	public static final String CACHE_AREA_LIST = "areaList";
 	public static final String CACHE_OFFICE_LIST = "officeList";
 	public static final String CACHE_OFFICE_ALL_LIST = "officeAllList";
-	
+
 	/**
 	 * 根据ID获取用户
 	 * @param id
@@ -64,21 +60,7 @@ public class UserUtils {
 		}
 		return user;
 	}
-	
-	/**
-	 * 根据ID获取用户
-	 * @param id
-	 * @return 取不到返回null
-	 */
-	public static User getUserById(String id){
-		User user = new User();
-		user = userDao.get(id);
-		if (user == null){
-			return new User();
-		}
-		return user;
-	}
-	
+
 	/**
 	 * 根据登录名获取用户
 	 * @param loginName
@@ -97,7 +79,7 @@ public class UserUtils {
 		}
 		return user;
 	}
-	
+
 	/**
 	 * 清除当前用户缓存
 	 */
@@ -109,7 +91,7 @@ public class UserUtils {
 		removeCache(CACHE_OFFICE_ALL_LIST);
 		UserUtils.clearCache(getUser());
 	}
-	
+
 	/**
 	 * 清除指定用户缓存
 	 * @param user
@@ -122,7 +104,7 @@ public class UserUtils {
 			CacheUtils.remove(USER_CACHE, USER_CACHE_LIST_BY_OFFICE_ID_ + user.getOffice().getId());
 		}
 	}
-	
+
 	/**
 	 * 获取当前用户
 	 * @return 取不到返回 new User()
@@ -160,7 +142,7 @@ public class UserUtils {
 		}
 		return roleList;
 	}
-	
+
 	/**
 	 * 获取当前用户授权菜单
 	 * @return
@@ -183,25 +165,6 @@ public class UserUtils {
 	}
 
 	/**
-	 * 获取当前用户授权菜单
-	 * @return
-	 */
-	public static List<Menu> getMobileMenuList(){
-		List<Menu> menuList = Lists.newArrayList();
-		if (menuList == null||menuList.isEmpty()){
-			User user = getUser();
-			if (user.isAdmin()){
-				menuList = menuDao.findAllList(new Menu());
-			}else{
-				Menu m = new Menu();
-				m.setUserId(user.getId());
-				menuList = menuDao.findMobileMenuByUserId(m);
-			}
-		}
-		return menuList;
-	}
-	
-	/**
 	 * 获取当前用户授权菜单(子菜单包含在父菜单对象里)
 	 * @return
 	 */
@@ -209,28 +172,28 @@ public class UserUtils {
 		@SuppressWarnings("unchecked")
 		List<Menu> menuList = (List<Menu>)getCache(CACHE_TREE_MENU_LIST);
 		//if (menuList == null){
-			List<Menu> result = new ArrayList<Menu>();
-			menuList = getMenuList();			
-			Map<String, Menu> map = new HashMap<String, Menu>();
-			for(Menu menu:menuList){
-				map.put(menu.getId(),menu);
-				if(menu.getParentId().equals(Menu.getRootId())){
-					result.add(menu);
-				}
+		List<Menu> result = new ArrayList<Menu>();
+		menuList = getMenuList();
+		Map<String,Menu> map = new HashMap<String,Menu>();
+		for(Menu menu:menuList){
+			map.put(menu.getId(),menu);
+			if(menu.getParentId().equals(Menu.getRootId())){
+				result.add(menu);
 			}
-			for(Menu menu:menuList){
-				String pid = menu.getParentId();
-				if(map.get(pid) != null && (menu.getIsShow().equals("1")||all)){
-					map.get(pid).getSubMenu().add(menu);					
-				}
+		}
+		for(Menu menu:menuList){
+			String pid = menu.getParentId();
+			if(map.get(pid) != null && (menu.getIsShow().equals("1")||all)){
+				map.get(pid).getSubMenu().add(menu);
 			}
-			menuList.clear();
-			menuList = result;
-			putCache(CACHE_TREE_MENU_LIST, menuList);
+		}
+		menuList.clear();
+		menuList = result;
+		putCache(CACHE_TREE_MENU_LIST, menuList);
 		//}
 		return menuList;
 	}
-	
+
 	/**
 	 * 获取当前用户授权的区域
 	 * @return
@@ -241,7 +204,7 @@ public class UserUtils {
 		if (areaList == null){
 			areaList = areaDao.findAllList(new Area());
 			List<Area> result = new ArrayList<Area>();
-			Map<String, Area> map = new HashMap<String, Area>();
+			Map<String,Area> map = new HashMap<String,Area>();
 			for(Area area:areaList){
 				map.put(area.getId(),area);
 				if(area.getParentId().equals(Area.getRootId())){
@@ -251,7 +214,7 @@ public class UserUtils {
 			for(Area area:areaList){
 				String pid = area.getParentId();
 				if(map.get(pid) != null){
-					map.get(pid).getSubArea().add(area);					
+					map.get(pid).getSubArea().add(area);
 				}
 			}
 			areaList.clear();
@@ -260,7 +223,7 @@ public class UserUtils {
 		}
 		return areaList;
 	}
-	
+
 	/**
 	 * 获取当前用户有权限访问的部门
 	 * @return
@@ -294,10 +257,10 @@ public class UserUtils {
 		}
 		return officeList;
 	}
-	
+
 	private static List<Office> convertOfficeTree(List<Office> officeList) {
 		List<Office> result = new ArrayList<Office>();
-		Map<String, Office> map = new HashMap<String, Office>();
+		Map<String,Office> map = new HashMap<String,Office>();
 		for(Office office:officeList){
 			map.put(office.getId(),office);
 			if(office.getParentId().equals(Office.getRootId())){
@@ -307,7 +270,7 @@ public class UserUtils {
 		for(Office office:officeList){
 			String pid = office.getParentId();
 			if(map.get(pid) != null){
-				map.get(pid).getSubOffice().add(office);					
+				map.get(pid).getSubOffice().add(office);
 			}
 		}
 		officeList.clear();
@@ -319,8 +282,8 @@ public class UserUtils {
 		office.setType("1");
 		List<Office> companys = officeDao.getCompanys(office);
 		return companys;
-	}	
-	
+	}
+
 	public static Office getCompany(String officeId) {
 		Office company = officeDao.get(new Office(officeId)).getCompany();
 		return company;
@@ -343,15 +306,14 @@ public class UserUtils {
 			if (principal != null){
 				return principal;
 			}
-//			subject.logout();
 		}catch (UnavailableSecurityManagerException e) {
-			
+			e.printStackTrace();
 		}catch (InvalidSessionException e){
-			
+			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	public static Session getSession(){
 		try{
 			Subject subject = SecurityUtils.getSubject();
@@ -362,7 +324,6 @@ public class UserUtils {
 			if (session != null){
 				return session;
 			}
-//			subject.logout();
 		}catch (InvalidSessionException e){
 			
 		}
@@ -376,42 +337,16 @@ public class UserUtils {
 	}
 	
 	public static Object getCache(String key, Object defaultValue) {
-//		Object obj = getCacheMap().get(key);
 		Object obj = getSession().getAttribute(key);
 		return obj==null?defaultValue:obj;
 	}
 
 	public static void putCache(String key, Object value) {
-//		getCacheMap().put(key, value);
 		getSession().setAttribute(key, value);
 	}
 
 	public static void removeCache(String key) {
-//		getCacheMap().remove(key);
 		getSession().removeAttribute(key);
 	}
-	
-//	public static Map<String, Object> getCacheMap(){
-//		Principal principal = getPrincipal();
-//		if(principal!=null){
-//			return principal.getCacheMap();
-//		}
-//		return new HashMap<String, Object>();
-//	}
 
-	public static List<Menu> getMobileRoleList() {
-		List<Menu> roleList = Lists.newArrayList();
-		if (roleList == null||roleList.isEmpty()){
-			User user = getUser();
-			if (user.isAdmin()){
-				roleList = menuDao.findAllList(new Menu());
-			}else{
-				Menu m = new Menu();
-				m.setUserId(user.getId());
-				roleList = menuDao.findMobileMenuByRole(m);
-			}
-		}
-		return roleList;
-	}
-	
 }

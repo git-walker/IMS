@@ -2,12 +2,12 @@
 	white-space: nowrap;
 }
 
-.l2m-no-header {
-	padding-top:20px;
+.ims-no-header {
+	padding-top:10px;
 }
 
-.breadcrumbs-fixed + .l2m-no-header {
-    padding-top: 61px;
+.breadcrumbs-fixed + .ims-no-header {
+    padding-top: 51px;
 }
 
 form .form-group:first-child {
@@ -175,24 +175,49 @@ img.editable-click {
     border: 0;
 }
 
-#meetingQrCode{
-	display: block;
-	position: absolute;
-	left: -191px;top:180px;
-	z-index: 102;
-	width:200px;height: 350px;
-	background-color: #FFFFFF;
-	border-radius: 0 0 0 5px;
-	border:#FFB34B 1px solid;
+.myuploader-box{
+    display: inline-block;
 }
-#meetingQrCode #toggle{
-	position: absolute;
-	width:20px;height: 20px;
-	right:0px;top:-1px;
-	background-color: #FFB34B;
-	border-radius: 2px;
-	border:#FFB34B 1px solid;
+.myuploader-item{
+    display: inline-block;
+    position: relative;
+    width:80px;
+    border:1px solid #D6D6D6;
+    margin-right:8px;
+    margin-bottom:8px;
 }
-#qrContent div{
-	padding-left:4px;
+.myuploader-icon{
+    text-align: center;
 }
+.myuploader-icon i{
+    font-size: 3em;
+}
+.myuploader-filename{
+    text-align: center;
+    word-break:break-all;
+    font-size:0.8em;
+}
+.myuploader-status{
+    text-align: center;font-size:0.8em;
+    background-color: #00BE67;
+    color:#FFFFFF;
+    cursor: pointer;
+}
+.myuploader-status a{
+    color:#FFFFFF;
+}
+.myuploader-close{
+    position: absolute;right: -8px;top:-8px;
+}
+.myuploader-close i{
+    color:#003366;font-size:1.4em;
+    cursor: pointer;
+}
+.myuploader-btn{
+    display: inline-block;
+}
+.myuploader-btn i{
+    font-size: 4em;cursor: pointer;
+}
+
+

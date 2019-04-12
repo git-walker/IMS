@@ -36,7 +36,8 @@
 	</div>
 	<script src="${ctxStatic}/assets/js/shade.js"></script>
 	<script type="text/javascript">
-		var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js','${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',null];
+		var scripts = [null, '${ctxStatic}/treeTable/jquery.treeTable.min.js',
+			'${ctxStatic}/bootstrap-treeview/js/bootstrap-treeview.js',null];
 		$('.page-content-area').ace_ajax('loadScripts', scripts, function() {
 
 			jQuery(function($) {

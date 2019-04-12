@@ -62,23 +62,18 @@
 	<!-- 根据编号获得用户 -->
 	<select id="get" resultType="User">
 		SELECT
-			<include refid="userColumns"/><!-- ,
-			ro.office_id AS "roleList.officeList.id" -->
+			<include refid="userColumns"/>
 		FROM sys_user a
-		<include refid="userJoins"/><!-- 
-		LEFT JOIN sys_role_office ro ON ro.role_id = r.id -->
+		<include refid="userJoins"/>
 		WHERE a.id = #{id}
-	<!-- 	order by a.company_id,a.office_id -->
 	</select>
 	
 	<!-- 根据登录名查询用户 -->
 	<select id="getByLoginName" resultType="User" parameterType="User">
 		SELECT
-			<include refid="userColumns"/><!-- ,
-			ro.office_id AS "roleList.officeList.id" -->
+			<include refid="userColumns"/>
 		FROM sys_user a
-		<include refid="userJoins"/><!-- 
-		LEFT JOIN sys_role_office ro ON ro.role_id = r.id -->
+		<include refid="userJoins"/>
 		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
 
@@ -94,18 +89,15 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		<if test="company != null and company.id != null and company.id != ''">
 			AND (c.id = #{company.id} OR c.parent_ids LIKE
-			<if test="dbName == 'oracle'">'%'||#{company.id}||'%')</if>
-			<if test="dbName == 'mysql'">CONCAT('%', #{company.id}, '%'))</if>
+			CONCAT('%', #{company.id}, '%'))
 		</if>
 		<if test="office != null and office.id != null and office.id != ''">
 			AND (o.id = #{office.id} OR o.parent_ids LIKE
-			<if test="dbName == 'oracle'">'%'||#{office.id}||'%')</if>
-			<if test="dbName == 'mysql'">CONCAT('%', #{office.id}, '%'))</if>
+			CONCAT('%', #{office.id}, '%'))
 		</if>
 		<if test="office != null and office.name != null and office.name != ''">
 			AND o.name LIKE
-			<if test="dbName == 'oracle'">'%'||#{office.name}||'%'</if>
-			<if test="dbName == 'mysql'">CONCAT('%', #{office.name}, '%')</if>
+			CONCAT('%', #{office.name}, '%')
 		</if>
 		<!-- 如果不是超级管理员，则不显示超级管理员用户 -->
 		<if test="!currentUser.admin">
@@ -113,24 +105,15 @@
 		</if>
 		<if test="loginName != null and loginName != ''">
 			AND a.login_name like
-			<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
-			<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+			CONCAT('%', #{loginName}, '%')
 		</if>
 		<if test="name != null and name != ''">
 			AND a.name like
-			<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-			<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+			CONCAT('%', #{name}, '%')
 		</if>
 		<!-- 数据范围过滤 -->
 		${sqlMap.dsf}
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.name,o.name,a.login_name
-			</otherwise>
-		</choose>
+		ORDER BY a.name,o.name,a.login_name
 	</select>
 		
 	<!-- 根据OfficeId获取用户（树查询用户时用） -->

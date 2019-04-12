@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.web;
 
 import cn.rootyu.rad.common.config.Global;
@@ -113,16 +110,6 @@ public class MenuController extends BaseController {
 			menu.setIsShow("1");
 		}else{
 			menu.setIsShow("0");
-		}
-		if(menu.getIsMobile()!=null && menu.getIsMobile().equals("on")){
-			menu.setIsMobile("1");
-		}else{
-			menu.setIsMobile("0");
-		}
-		if(menu.getTaskFlag()!=null && menu.getTaskFlag().equals("on")){
-			menu.setTaskFlag("1");
-		}else{
-			menu.setTaskFlag("0");
 		}
 		if (!beanValidatorAjax(returnMap, menu)){
 			return returnMap;

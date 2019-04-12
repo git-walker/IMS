@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.utils.excel;
 
 import cn.rootyu.rad.common.utils.Encodes;
@@ -28,8 +25,6 @@ import java.util.*;
 
 /**
  * 导出Excel文件（导出“XLSX”格式，支持大数据量导出   @see org.apache.poi.ss.SpreadsheetVersion）
- * @author DHC
- * @version 2013-04-21
  */
 public class ExportExcel {
 	
@@ -485,7 +480,6 @@ public class ExportExcel {
 
 	/**
 	 * 添加单元格
-	 * @param row 添加的行
 	 * @param startRow 开始行
 	 * @param endRow 结束行
 	 * @param startColumn 开始列
@@ -544,7 +538,6 @@ public class ExportExcel {
 	
 	/**
 	 * 添加单元格
-	 * @param row 添加的行
 	 * @param startRow 开始行
 	 * @param endRow 结束行
 	 * @param startColumn 开始列
@@ -627,7 +620,7 @@ public class ExportExcel {
 	
 	/**
 	 * 输出到文件
-	 * @param fileName 输出文件名
+	 * @param name 输出文件名
 	 */
 	public ExportExcel writeFile(String name) throws IOException{
 		FileOutputStream os = null;

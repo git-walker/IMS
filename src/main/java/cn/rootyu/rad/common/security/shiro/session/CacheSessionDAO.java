@@ -1,125 +1,25 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.security.shiro.session;
 
-import cn.rootyu.rad.common.config.Global;
 import cn.rootyu.rad.common.utils.DateUtils;
 import cn.rootyu.rad.common.utils.StringUtils;
-import cn.rootyu.rad.common.web.Servlets;
-import com.google.common.collect.Sets;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * 系统安全认证实现类
- * @author DHC
- * @version 2014-7-24
+ * @author yuhui
+ * @version 1.0
  */
 public class CacheSessionDAO extends EnterpriseCacheSessionDAO implements SessionDAO {
-
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     public CacheSessionDAO() {
         super();
-    }
-
-    @Override
-    protected void doUpdate(Session session) {
-    	if (session == null || session.getId() == null) {  
-            return;
-        }
-    	
-    	HttpServletRequest request = Servlets.getRequest();
-		if (request != null){
-			String uri = request.getServletPath();
-			// 如果是静态文件，则不更新SESSION
-			if (Servlets.isStaticFile(uri)){
-				return;
-			}
-			// 如果是视图文件，则不更新SESSION
-			if (StringUtils.startsWith(uri, Global.getConfig("web.view.prefix"))
-					&& StringUtils.endsWith(uri, Global.getConfig("web.view.suffix"))){
-				return;
-			}
-			// 手动控制不更新SESSION
-			String updateSession = request.getParameter("updateSession");
-			if (Global.FALSE.equals(updateSession) || Global.NO.equals(updateSession)){
-				return;
-			}
-		}
-    	super.doUpdate(session);
-    	logger.debug("update {} {}", session.getId(), request != null ? request.getRequestURI() : "");
-    }
-
-    @Override
-    protected void doDelete(Session session) {
-    	if (session == null || session.getId() == null) {  
-            return;
-        }
-    	
-    	super.doDelete(session);
-    	logger.debug("delete {} ", session.getId());
-    }
-
-    @Override
-    protected Serializable doCreate(Session session) {
-		HttpServletRequest request = Servlets.getRequest();
-		if (request != null){
-			String uri = request.getServletPath();
-			// 如果是静态文件，则不创建SESSION
-			if (Servlets.isStaticFile(uri)){
-		        return null;
-			}
-		}
-		super.doCreate(session);
-		logger.debug("doCreate {} {}", session, request != null ? request.getRequestURI() : "");
-    	return session.getId();
-    }
-
-    @Override
-    protected Session doReadSession(Serializable sessionId) {
-		return super.doReadSession(sessionId);
-    }
-    
-    @Override
-    public Session readSession(Serializable sessionId) throws UnknownSessionException {
-    	try{
-    		Session s = null;
-    		HttpServletRequest request = Servlets.getRequest();
-    		if (request != null){
-    			String uri = request.getServletPath();
-    			// 如果是静态文件，则不获取SESSION
-    			if (Servlets.isStaticFile(uri)){
-    				return null;
-    			}
-    			s = (Session)request.getAttribute("session_"+sessionId);
-    		}
-    		if (s != null){
-    			return s;
-    		}
-
-    		Session session = super.readSession(sessionId);
-    		logger.debug("readSession {} {}", sessionId, request != null ? request.getRequestURI() : "");
-    		
-    		if (request != null && session != null){
-    			request.setAttribute("session_"+sessionId, session);
-    		}
-    		
-    		return session;
-    	}catch (UnknownSessionException e) {
-			return null;
-		}
     }
 
     /**
@@ -145,7 +45,7 @@ public class CacheSessionDAO extends EnterpriseCacheSessionDAO implements Sessio
 		if (includeLeave && principal == null){
 			return getActiveSessions();
 		}
-		Set<Session> sessions = Sets.newHashSet();
+		Set<Session> sessions = new HashSet();
 		for (Session session : getActiveSessions()){
 			boolean isActiveSession = false;
 			// 不包括离线并符合最后访问时间小于等于3分钟条件。

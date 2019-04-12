@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.utils;
 
 import cn.rootyu.rad.common.utils.CacheUtils;
@@ -16,8 +13,8 @@ import java.util.Map;
 
 /**
  * 字典工具类
- * @author DHC
- * @version 2013-5-29
+ * @author yuhui
+ * @version 1.0
  */
 public class DictUtils {
 	

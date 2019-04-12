@@ -1,8 +1,6 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.service;
 
+import cn.rootyu.ims.common.entity.LayuiPageInfo;
 import cn.rootyu.rad.common.service.CrudService;
 import cn.rootyu.rad.common.utils.CacheUtils;
 import cn.rootyu.rad.modules.sys.dao.DictDao;
@@ -15,8 +13,8 @@ import java.util.List;
 
 /**
  * 字典Service
- * @author DHC
- * @version 2014-05-16
+ * @author yuhui
+ * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
@@ -49,5 +47,7 @@ public class DictService extends CrudService<DictDao, Dict> {
     	}
     	CacheUtils.remove(DictUtils.CACHE_DICT_MAP);
 	}
-	
+	public LayuiPageInfo<Dict> findPageList(Dict dict) {
+		return new LayuiPageInfo<>(dao.findList(dict));
+	}
 }

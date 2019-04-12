@@ -1,77 +1,44 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.modules.sys.entity;
 
-import cn.rootyu.rad.common.persistence.DataEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import cn.rootyu.rad.common.entity.TreeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 菜单Entity
- * @author DHC
- * @version 2013-05-15
+ * @author yuhui
+ * @version 1.0
  */
-public class Menu extends DataEntity<Menu> {
+public class Menu extends TreeEntity<Menu> {
 
 	private static final long serialVersionUID = 1L;
-	private Menu parent;	// 父级菜单
-	private String parentIds; // 所有父级编号
-	private String name; 	// 名称
 	private String href; 	// 链接
 	private String target; 	// 目标（ mainFrame、_blank、_self、_parent、_top）
 	private String icon; 	// 图标
-	private Integer sort; 	// 排序
 	private String isShow; 	// 是否在菜单中显示（1：显示；0：不显示）
 	private String permission; // 权限标识
-	private String isMobile;//
 	private List<Menu> subMenu; //子菜单集合
-	private String taskFlag;// 显示任务
-	private int taskCount;//显示任务数
-	private int currentTaskCount;//显示任务数(当前任务)
+
 	private String userId;
 	private String roleId; //角色Id
 	public Menu(){
 		super();
-		this.sort = 30;
 		this.isShow = "1";
 	}
 	
 	public Menu(String id){
 		super(id);
 	}
-	
-	@JsonBackReference
-	@NotNull
+
 	public Menu getParent() {
 		return parent;
 	}
 
 	public void setParent(Menu parent) {
 		this.parent = parent;
-	}
-
-	@Length(min=1, max=2000)
-	public String getParentIds() {
-		return parentIds;
-	}
-
-	public void setParentIds(String parentIds) {
-		this.parentIds = parentIds;
-	}
-	
-	@Length(min=1, max=100)
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Length(min=0, max=2000)
@@ -99,15 +66,6 @@ public class Menu extends DataEntity<Menu> {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
-	}
-	
-	@NotNull
-	public Integer getSort() {
-		return sort;
-	}
-	
-	public void setSort(Integer sort) {
-		this.sort = sort;
 	}
 	
 	@Length(min=1, max=1)
@@ -181,38 +139,6 @@ public class Menu extends DataEntity<Menu> {
 			subMenu = new ArrayList<Menu>();
 		}
 		return subMenu;
-	}
-
-	public String getIsMobile() {
-		return isMobile;
-	}
-
-	public void setIsMobile(String isMobile) {
-		this.isMobile = isMobile;
-	}
-
-	public String getTaskFlag() {
-		return taskFlag;
-	}
-
-	public void setTaskFlag(String taskFlag) {
-		this.taskFlag = taskFlag;
-	}
-
-	public int getTaskCount() {
-		return taskCount;
-	}
-
-	public void setTaskCount(int taskCount) {
-		this.taskCount = taskCount;
-	}
-
-	public int getCurrentTaskCount() {
-		return currentTaskCount;
-	}
-
-	public void setCurrentTaskCount(int currentTaskCount) {
-		this.currentTaskCount = currentTaskCount;
 	}
 
 	public String getRoleId() {

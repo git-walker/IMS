@@ -1,11 +1,7 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.web;
 
 import cn.rootyu.rad.common.beanvalidator.BeanValidators;
-import cn.rootyu.rad.common.mapper.JsonMapper;
-import cn.rootyu.rad.modules.sys.dao.OfficeDao;
+import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 控制器支持类
- *
- * @author DHC
- * @version 2013-3-23
+ * @ClassName BaseController
+ * @Description 控制器支基类
+ * @Author yuhui
+ * @Date 2019/3/19 19:23
+ * @Version 1.0
  */
-public abstract class BaseController {
+public  abstract class BaseController {
 
-    @Autowired
-    private OfficeDao officeDao;
     /**
      * 日志对象
      */
@@ -44,18 +39,6 @@ public abstract class BaseController {
      */
     @Value("${adminPath}")
     protected String adminPath;
-
-    /**
-     * 前端基础路径
-     */
-    @Value("${frontPath}")
-    protected String frontPath;
-
-    /**
-     * 前端URL后缀
-     */
-    @Value("${urlSuffix}")
-    protected String urlSuffix;
 
     /**
      * 验证Bean实例对象
@@ -181,7 +164,7 @@ public abstract class BaseController {
      * @return
      */
     protected String renderString(HttpServletResponse response, Object object) {
-        return renderString(response, JsonMapper.toJsonString(object), "application/json");
+        return renderString(response, JSON.toJSONString(object), "application/json");
     }
 
     /**
@@ -219,5 +202,6 @@ public abstract class BaseController {
     public String authenticationException() {
         return "error/403";
     }
+
 
 }

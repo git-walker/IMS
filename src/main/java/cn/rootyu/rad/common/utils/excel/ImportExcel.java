@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.utils.excel;
 
 import cn.rootyu.rad.common.utils.Reflections;
@@ -29,8 +26,6 @@ import java.util.List;
 
 /**
  * 导入Excel文件（支持“XLS”和“XLSX”格式）
- * @author DHC
- * @version 2013-03-10
  */
 public class ImportExcel{
 	
@@ -53,7 +48,7 @@ public class ImportExcel{
 	
 	/**
 	 * 构造函数
-	 * @param path 导入文件，读取第一个工作表
+	 * @param fileName 导入文件，读取第一个工作表
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @throws InvalidFormatException 
 	 * @throws IOException 
@@ -65,7 +60,7 @@ public class ImportExcel{
 	
 	/**
 	 * 构造函数
-	 * @param path 导入文件对象，读取第一个工作表
+	 * @param file，读取第一个工作表
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @throws InvalidFormatException 
 	 * @throws IOException 
@@ -77,7 +72,7 @@ public class ImportExcel{
 
 	/**
 	 * 构造函数
-	 * @param path 导入文件
+	 * @param fileName 导入文件
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @param sheetIndex 工作表编号
 	 * @throws InvalidFormatException 
@@ -90,7 +85,7 @@ public class ImportExcel{
 	
 	/**
 	 * 构造函数
-	 * @param path 导入文件对象
+	 * @param file 导入文件对象
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @param sheetIndex 工作表编号
 	 * @throws InvalidFormatException 
@@ -103,7 +98,7 @@ public class ImportExcel{
 	
 	/**
 	 * 构造函数
-	 * @param file 导入文件对象
+	 * @param multipartFile 导入文件对象
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @param sheetIndex 工作表编号
 	 * @throws InvalidFormatException 
@@ -116,7 +111,7 @@ public class ImportExcel{
 
 	/**
 	 * 构造函数
-	 * @param path 导入文件对象
+	 * @param fileName 导入文件对象
 	 * @param headerNum 标题行号，数据行号=标题行号+1
 	 * @param sheetIndex 工作表编号
 	 * @throws InvalidFormatException 

@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2014 <a href="http://www.dhc.com.cn">DHC</a> All rights reserved.
- */
 package cn.rootyu.rad.common.utils;
 
 import net.sf.ehcache.Cache;
@@ -9,8 +6,6 @@ import net.sf.ehcache.Element;
 
 /**
  * Cache工具类
- * @author DHC
- * @version 2013-5-29
  */
 public class CacheUtils {
 	
@@ -20,8 +15,6 @@ public class CacheUtils {
 
 	/**
 	 * 获取SYS_CACHE缓存
-	 * @param key
-	 * @return
 	 */
 	public static Object get(String key) {
 		return get(SYS_CACHE, key);
@@ -29,8 +22,6 @@ public class CacheUtils {
 	
 	/**
 	 * 写入SYS_CACHE缓存
-	 * @param key
-	 * @return
 	 */
 	public static void put(String key, Object value) {
 		put(SYS_CACHE, key, value);
@@ -38,8 +29,6 @@ public class CacheUtils {
 	
 	/**
 	 * 从SYS_CACHE缓存中移除
-	 * @param key
-	 * @return
 	 */
 	public static void remove(String key) {
 		remove(SYS_CACHE, key);
@@ -47,9 +36,6 @@ public class CacheUtils {
 	
 	/**
 	 * 获取缓存
-	 * @param cacheName
-	 * @param key
-	 * @return
 	 */
 	public static Object get(String cacheName, String key) {
 		Element element = getCache(cacheName).get(key);
@@ -58,9 +44,6 @@ public class CacheUtils {
 
 	/**
 	 * 写入缓存
-	 * @param cacheName
-	 * @param key
-	 * @param value
 	 */
 	public static void put(String cacheName, String key, Object value) {
 		Element element = new Element(key, value);
@@ -69,8 +52,6 @@ public class CacheUtils {
 
 	/**
 	 * 从缓存中移除
-	 * @param cacheName
-	 * @param key
 	 */
 	public static void remove(String cacheName, String key) {
 		getCache(cacheName).remove(key);
@@ -78,8 +59,6 @@ public class CacheUtils {
 	
 	/**
 	 * 获得一个Cache，没有则创建一个。
-	 * @param cacheName
-	 * @return
 	 */
 	private static Cache getCache(String cacheName){
 		Cache cache = cacheManager.getCache(cacheName);
@@ -89,10 +68,6 @@ public class CacheUtils {
 			cache.getCacheConfiguration().setEternal(true);
 		}
 		return cache;
-	}
-
-	public static CacheManager getCacheManager() {
-		return cacheManager;
 	}
 	
 }
