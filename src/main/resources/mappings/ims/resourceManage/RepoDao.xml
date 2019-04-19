@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.resourceManage.dao.RepoDao">
+    <select id="selectRepoList" resultType="cn.rootyu.ims.resourceManage.entity.Repo">
+         select a.id,
+         a.name repoName,
+         a.code repoCode,
+         a.address repoAddress,
+         a.useable status,
+         b.id keeperId,
+         b.name storekeeper,
+         a.remarks
+         from ims_repo a
+         left join sys_user b on a.admin_id = b.id
+         where a.del_flag='0'
+         and b.del_flag='0'
+        <if test="id!=null and id!=''">
+            and a.id = #{id}
+        </if>
+        <if test="repoName!=null and repoName!=''">
+            and a.name like CONCAT('%', #{repoName}, '%')
+        </if>
+        <if test="repoCode!=null and repoCode!=''">
+            and a.code like CONCAT('%', #{repoCode}, '%')
+        </if>
+        order by a.code,a.name
+    </select>
+
+    <insert id="addRepo">
+        insert into ims_repo (id,name,code,address,useable,admin_id,create_date,create_by,update_date,update_by,remarks,del_flag)
+        values (
+        #{id},
+        #{repoName},
+        #{repoCode},
+        #{repoAddress},
+        #{status},
+        #{keeperId},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{createBy.id},
+        #{updateDate,jdbcType=TIMESTAMP},
+        #{updateBy.id},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateRepo">
+        update ims_repo
+        set name=#{repoName},
+        code=#{repoCode},
+        address=#{repoAddress},
+        useable=#{status},
+        admin_id=#{keeperId},
+        update_date=#{updateDate,jdbcType=TIMESTAMP},
+        update_by=#{updateBy.id},
+        remarks=#{remarks}
+        where id=#{id}
+    </update>
+
+    <update id="removeRepo">
+        update ims_repo
+        set del_flag='1'
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getAllRepo" resultType="cn.rootyu.ims.resourceManage.entity.Repo">
+    select a.id,
+    a.name repoName
+    from ims_repo a
+    where a.del_flag='0'
+    and a.useable ='0'
+    order by a.name
+    </select>
+</mapper>

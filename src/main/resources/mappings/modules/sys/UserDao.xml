@@ -17,6 +17,7 @@
 		a.login_ip "login_ip",
 		a.login_date "login_date",
 		a.remarks "remarks",
+		r.name "role1",
 		a.login_flag "loginFlag",
 		a.photo "photo",
 		a.create_by AS "createBy.id",
@@ -49,6 +50,8 @@
     </sql>
   
     <sql id="userJoins">
+		LEFT JOIN sys_user_role ur ON ur.user_id = a.id
+		LEFT JOIN sys_role r ON r.id = ur.role_id
 		LEFT JOIN sys_office c ON c.id = a.company_id
 		LEFT JOIN sys_area ca ON ca.id = c.area_id
 		LEFT JOIN sys_office o ON o.id = a.office_id
@@ -83,9 +86,6 @@
 		<include refid="userColumns"/>
 		FROM sys_user a
 		<include refid="userJoins"/>
-		<if test="role != null and role.id != null and role.id != ''">
-			JOIN sys_user_role ur ON ur.user_id = a.id AND ur.role_id = #{role.id}
-		</if>
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		<if test="company != null and company.id != null and company.id != ''">
 			AND (c.id = #{company.id} OR c.parent_ids LIKE
@@ -288,4 +288,9 @@
 		left join SYS_USER_ROLE r on r.user_id = t.id
 		where r.role_id = #{id}
 	</select>
+
+	<update id="updateLoginDisabled">
+		update sys_user set LOGIN_FLAG='0'
+		where id=#{id}
+	</update>
 </mapper>

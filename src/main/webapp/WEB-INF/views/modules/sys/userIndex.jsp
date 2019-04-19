@@ -126,16 +126,16 @@
                             return "";
                         }},
                     {field: 'mobile', title: '手机号码'},
-                    <%--{field: 'userType', title: '用户类型',templet:function(rowData){--%>
-                    <%--var type = getDictLabel(${fns:toJson(fns:getDictList("sys_user_type"))}, rowData.userType);--%>
-                    <%--if(type)return type;--%>
-                    <%--return "";--%>
-                    <%--}},--%>
-                    <%--{field: 'loginFlag', title: '预先登录',templet:function(rowData){--%>
-                    <%--var flag = getDictLabel(${fns:toJson(fns:getDictList("yes_no"))}, rowData.loginFlag);--%>
-                    <%--return flag;--%>
-                    <%--}},--%>
-                    {field: 'id', title: '操作',toolbar: '#colToolBar'}
+                    {field: 'userType', title: '用户类型',templet:function(rowData){
+                    var type = getDictLabel(${fns:toJson(fns:getDictList("sys_user_type"))}, rowData.userType);
+                    if(type)return type;
+                    return "";
+                    }},
+                    {field: 'loginFlag', title: '预先登录',templet:function(rowData){
+                    var flag = getDictLabel(${fns:toJson(fns:getDictList("yes_no"))}, rowData.loginFlag);
+                    return flag;
+                    }},
+                    {field: 'id', title: '操作',toolbar: '#colToolBar',width:160}
                 ]]
             });
 

@@ -1,7 +1,6 @@
 package cn.rootyu.rad.modules.sys.web;
 
 import cn.rootyu.rad.common.config.Global;
-import cn.rootyu.rad.common.utils.Collections3;
 import cn.rootyu.rad.common.utils.StringUtils;
 import cn.rootyu.rad.common.web.BaseController;
 import cn.rootyu.rad.modules.sys.entity.Menu;
@@ -219,17 +218,17 @@ public class RoleController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@RequiresPermissions("sys:role:view")
-	@RequestMapping(value = "usertorole")
-	public String selectUserToRole(Role role, Model model) {
-		List<User> userList = systemService.findAllUser(new User(new Role(role.getId())));
-		List<Office> userList2 = officeService.findAll();
-		model.addAttribute("role", role);
-		model.addAttribute("userList", userList);
-		model.addAttribute("selectIds", Collections3.extractToString(userList, "name", ","));
-		model.addAttribute("officeList", userList2);
-		return "modules/sys/selectUserToRole";
-	}
+//	@RequiresPermissions("sys:role:view")
+//	@RequestMapping(value = "usertorole")
+//	public String selectUserToRole(Role role, Model model) {
+//		List<User> userList = systemService.findAllUser(new User(new Role(role.getId())));
+//		List<Office> userList2 = officeService.findAll();
+//		model.addAttribute("role", role);
+//		model.addAttribute("userList", userList);
+//		model.addAttribute("selectIds", Collections3.extractToString(userList, "name", ","));
+//		model.addAttribute("officeList", userList2);
+//		return "modules/sys/selectUserToRole";
+//	}
 	
 	/**
 	 * 角色分配 -- 根据部门编号获取用户列表

@@ -238,7 +238,7 @@
 	<script type="text/javascript">
         if('ontouchstart' in document.documentElement) document.write("<script src='${ctxStatic}/jquery/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 	</script>
-	<script src="${ctxStatic}/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+	<script src="${ctxStatic}/bootstrap-3.3.1/js/bootstrap.js"></script>
 	<!--[if lte IE 8]>
 	<script src="${ctxStatic}/assets/js/excanvas.min.js"></script>
 	<![endif]-->

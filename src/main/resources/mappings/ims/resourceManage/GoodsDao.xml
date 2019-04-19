@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.resourceManage.dao.GoodsDao">
+    <select id="selectGoodsList" resultType="cn.rootyu.ims.resourceManage.entity.Goods">
+        select a.id,
+        a.name goodsName,
+        a.code goodsCode,
+        a.type goodsType,
+        a.brand_id goodsBrand,
+        b.full_name brandName,
+        a.spec_model specification,
+        a.buyprice buyPrice,
+        a.saleprice salePrice,
+        a.status,
+        a.picture,
+        a.remarks
+        from ims_goods a
+        left join ims_supplier b on a.brand_id = b.id
+        where a.del_flag='0'
+        and b.del_flag='0'
+        <if test="id!=null and id!=''">
+            and a.id = #{id}
+        </if>
+        <if test="goodsName!=null and goodsName!=''">
+            and a.name like CONCAT('%', #{goodsName}, '%')
+        </if>
+        <if test="goodsCode!=null and goodsCode!=''">
+            and a.code like CONCAT('%', #{goodsCode}, '%')
+        </if>
+        <if test="goodsBrand!=null and goodsBrand!=''">
+            and b.id = #{goodsBrand}
+        </if>
+        order by a.name
+    </select>
+
+    <select id="selectGoodsBySupplierId" resultType="cn.rootyu.ims.resourceManage.entity.Goods">
+        select a.id,
+        a.name goodsName
+         from ims_goods a
+         left join ims_supplier b on a.brand_id = b.id
+        where a.del_flag='0'
+        and b.del_flag='0'
+        and a.status='0'
+        and a.brand_id=#{supplierId}
+        order by a.name
+    </select>
+
+    <insert id="addGoods">
+        insert into ims_goods(id,name,code,type,brand_id,spec_model,buyprice,saleprice,status,picture,remarks,create_date,create_by,update_date,update_by,del_flag)
+        values (
+        #{id},
+        #{goodsName},
+        #{goodsCode},
+        #{goodsType},
+        #{goodsBrand},
+        #{specification},
+        #{buyPrice},
+        #{salePrice},
+        #{status},
+        #{picture},
+        #{remarks},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{createBy.id},
+        #{updateDate,jdbcType=TIMESTAMP},
+        #{updateBy.id},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateGoods">
+        update ims_goods
+        set name=#{goodsName},
+        code=#{goodsCode},
+        type=#{goodsType},
+        brand_id=#{goodsBrand},
+        spec_model=#{specification},
+        buyprice=#{buyPrice},
+        saleprice=#{salePrice},
+        status=#{status},
+        picture=#{picture},
+        remarks=#{remarks},
+        update_date=#{updateDate,jdbcType=TIMESTAMP},
+        update_by=#{updateBy.id}
+        where id=#{id}
+    </update>
+
+    <update id="removeGoods">
+        update ims_goods
+        set del_flag='1'
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getDefaultGoods" resultType="java.util.Map">
+        select a.id,
+        a.name goodsName,
+        c.id as flag
+         from ims_goods a
+         left join ims_supplier b on a.brand_id = b.id
+         left join ims_order_item c on a.id = c.goods_id
+         and c.id=#{id}
+         and c.del_flag='0'
+        where a.del_flag='0'
+        and b.del_flag='0'
+        and a.status='0'
+        and a.brand_id=#{supplierId}
+        order by a.name
+    </select>
+
+    <select id="getAllGoodsByRepoId" resultType="cn.rootyu.ims.resourceManage.entity.Goods">
+        select a.id,
+        a.name goodsName,
+        b.count cnt
+        from ims_goods a
+        left join ims_stock b on a.id = b.goods_id
+        where b.repo_id=#{repoId}
+        and a.status='0'
+        and a.del_flag='0'
+        order by a.name
+    </select>
+</mapper>

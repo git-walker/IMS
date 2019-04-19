@@ -17,13 +17,10 @@ import cn.rootyu.rad.modules.sys.entity.Role;
 import cn.rootyu.rad.modules.sys.entity.User;
 import cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm;
 import cn.rootyu.rad.modules.sys.utils.UserUtils;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -76,10 +73,7 @@ public class SystemService extends BaseService {
     }
 
     //分页查询用户
-    public LayuiPageInfo<User> findUser(HttpServletRequest request, HttpServletResponse response, User user) {
-        Integer pageNo = 1;
-        Integer pageSize = Integer.valueOf(Global.getConfig("page.pageSize"));
-        PageHelper.startPage(pageNo,pageSize);
+    public LayuiPageInfo<User> findUser(User user) {
         // 生成数据权限过滤条件（dsf为dataScopeFilter的简写，在xml中使用 ${sqlMap.dsf}调用权限SQL）
         user.getSqlMap().put("dsf", dataScopeFilter(user.getCurrentUser(), "o", "a"));
         // 执行分页查询
@@ -218,6 +212,7 @@ public class SystemService extends BaseService {
      * 禁止用户登录
      * @param user
      */
+    @Transactional(readOnly = false)
     public void resetUserLogin(User user) {
         userDao.updateLoginDisabled(user);
         UserUtils.clearCache(user);

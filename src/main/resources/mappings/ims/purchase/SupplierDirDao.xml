@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.purchase.dao.SupplierDirDao">
+
+    <insert id="addSupplierDir">
+		INSERT INTO IMS_SUPPLIER_DIR
+		  (ID,THEME,YEAR,REMARKS,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE,DEL_FLAG)
+  		  VALUES
+  		  (#{id},
+  		  #{theme},
+  		  #{year},
+  		  #{remarks},
+  		  #{createBy.id},
+  		  #{createDate,jdbcType=TIMESTAMP},
+  		  #{updateBy.id},
+  		  #{updateDate,jdbcType=TIMESTAMP},
+  		  #{delFlag})
+	</insert>
+
+    <insert id="batchInsertSupplierDirDetail">
+        INSERT INTO IMS_SUPPLIER_DIR_DETAIL
+        (ID,SUPPLIER_ID,SUPPLIER_DIR_ID,CREATE_BY,CREATE_DATE)
+        <foreach collection="list" item="dto" index="index" separator="UNION ALL">
+            select
+            #{dto.id,jdbcType=VARCHAR}
+            ,#{dto.supplierId,jdbcType=VARCHAR}
+            ,#{dto.supplierDirId,jdbcType=VARCHAR}
+            ,#{dto.createBy.id,jdbcType=VARCHAR}
+            ,#{dto.createDate,jdbcType=TIMESTAMP}
+            from dual
+        </foreach>
+    </insert>
+
+    <update id="updateSupplierDir">
+        update IMS_SUPPLIER_DIR
+        <set>
+            update_by=#{updateBy.id},
+            update_date=#{updateDate,jdbcType=TIMESTAMP},
+            <if test="theme!=null and theme!=''">
+                THEME=#{theme},
+            </if>
+            <if test="remarks!=null">
+                REMARKS=#{remarks},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <update id="supplierDirDel">
+        update  IMS_SUPPLIER_DIR set del_flag='1'
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="delSupplierDirDetail">
+        delete from IMS_SUPPLIER_DIR_DETAIL
+        WHERE ID in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+
+    <select id="selectSupplierDirList" resultType="cn.rootyu.ims.purchase.entity.SupplierDir">
+        SELECT a.ID,
+        a.THEME,
+        a.YEAR,
+        a.REMARKS,
+        a.CREATE_BY,
+        a.CREATE_DATE,
+        a.UPDATE_BY,
+        a.UPDATE_DATE,
+        a.DEL_FLAG,
+        b.name createByName
+        FROM IMS_SUPPLIER_DIR a
+        LEFT JOIN SYS_USER b on a.CREATE_BY=b.id
+        where a.del_flag='0'
+        and b.del_flag='0'
+        <if test="id!=null and id!=''">
+            and a.id =#{id}
+        </if>
+        <if test="theme!=null and theme!=''">
+            and a.THEME like CONCAT('%',#{theme},'%')
+        </if>
+        <if test="year!=null and year!=''">
+            and a.YEAR =#{year}
+        </if>
+        order by a.YEAR desc
+    </select>
+
+    <!--合格的供方名录-->
+    <select id="selectSupplierDirDetailList" resultType="cn.rootyu.ims.purchase.entity.SupplierDirDetail">
+		SELECT a.ID,
+		  a.SUPPLIER_ID,
+		  a.SUPPLIER_DIR_ID,
+		  a.APPROVE_PRODUCT,
+		  a.CREATE_BY,
+		  a.CREATE_DATE,
+		  b.full_name supplierName,
+		  c.name createByName
+		FROM IMS_SUPPLIER_DIR_DETAIL a
+		left join IMS_SUPPLIER b on a.SUPPLIER_ID=b.id
+		left join sys_user c on a.CREATE_BY=c.id
+		where a.SUPPLIER_DIR_ID=#{dirId}
+	</select>
+
+    <!--可选的供方-->
+    <select id="unCheckedSupplierPageList" resultType="cn.rootyu.ims.purchase.entity.SupplierDirDetail">
+		SELECT a.ID,
+		  a.full_name supplierName
+		FROM IMS_SUPPLIER a
+		left join IMS_SUPPLIER_DIR_DETAIL b on b.SUPPLIER_ID=a.id and b.SUPPLIER_DIR_ID=#{dirId}
+		where b.id is null
+		ORDER BY supplierName
+	</select>
+
+    <select id="selectSupplierHistoryDirList"
+            resultType="cn.rootyu.ims.purchase.entity.SupplierDirDetail">
+		SELECT a.ID,
+		  a.SUPPLIER_ID,
+		  a.SUPPLIER_DIR_ID,
+		  a.APPROVE_PRODUCT,
+		  a.CREATE_BY,
+		  a.CREATE_DATE,
+		  b.theme,
+		  b.remarks,
+		  c.name createByName
+		FROM IMS_SUPPLIER_DIR_DETAIL a
+		left join IMS_SUPPLIER_DIR b on a.SUPPLIER_DIR_ID=b.id
+		left join sys_user c on a.CREATE_BY=c.id
+		where a.SUPPLIER_ID=#{supplierId}
+	</select>
+
+
+</mapper>

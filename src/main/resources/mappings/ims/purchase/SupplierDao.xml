@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.purchase.dao.SupplierDao">
+    <select id="selectSupplierList" resultType="cn.rootyu.ims.purchase.entity.Supplier">
+        select a.ID,
+        a.SUPPLIER_DESC supplierDesc,
+        a.FULL_NAME fullName,
+        a.BRIEF_NAME briefName,
+        a.EFFECTIVE_DATE effectiveDate,
+        a.EXPIRE_DATE expireDate,
+        a.DUTYMAN dutyMan,
+        a.PHONE phone,
+        a.ADDRESS,
+        a.REMARKS,
+        a.UNUSE_FLAG unuseFlag,
+        a.CREATE_BY,
+        a.CREATE_DATE,
+        a.UPDATE_BY,
+        a.UPDATE_DATE,
+        a.DEL_FLAG
+        from IMS_SUPPLIER a
+        where a.del_flag='0'
+        <if test="id!=null and id!=''">
+            and a.id =#{id}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and a.BRIEF_NAME like CONCAT('%', #{supplierName}, '%')
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and a.FULL_NAME like CONCAT('%', #{supplierName}, '%')
+        </if>
+        order by a.create_date desc
+    </select>
+
+    <insert id="addSupplier">
+		insert into IMS_SUPPLIER(ID,FULL_NAME,
+		BRIEF_NAME,SUPPLIER_DESC,UNUSE_FLAG,DUTYMAN,PHONE,ADDRESS,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE,REMARKS,DEL_FLAG) values
+		(
+		#{id},
+		#{fullName},
+		#{briefName},
+		#{supplierDesc},
+		#{unuseFlag},
+		#{dutyMan},
+		#{phone},
+		#{address},
+		#{createBy.id},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{updateBy.id},
+		#{updateDate,jdbcType=TIMESTAMP},
+		#{remarks},
+		#{delFlag}
+		)
+	</insert>
+
+    <update id="updateSupplier">
+        update IMS_SUPPLIER
+        <set>
+            update_by=#{updateBy.id},
+            update_date=#{updateDate,jdbcType=TIMESTAMP},
+            <if test="supplierDesc!=null and supplierDesc!=''">
+                SUPPLIER_DESC=#{supplierDesc},
+            </if>
+            <if test="fullName!=null">
+                FULL_NAME=#{fullName},
+            </if>
+            <if test="briefName!=null">
+                BRIEF_NAME=#{briefName},
+            </if>
+            <if test="unuseFlag!=null">
+                UNUSE_FLAG=#{unuseFlag},
+            </if>
+            <if test="dutyMan!=null">
+                DUTYMAN=#{dutyMan},
+            </if>
+            <if test="phone!=null">
+                PHONE=#{phone},
+            </if>
+            <if test="address!=null">
+            ADDRESS=#{address},
+            </if>
+            <if test="remarks!=null">
+                REMARKS=#{remarks},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <update id="removeSuppliers">
+        update IMS_SUPPLIER
+        set del_flag='1'
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getAllSupplier" resultType="cn.rootyu.ims.purchase.entity.Supplier">
+    select a.ID,
+    a.FULL_NAME fullName
+    from IMS_SUPPLIER a
+    where a.del_flag='0'
+    order by a.create_date desc
+    </select>
+</mapper>

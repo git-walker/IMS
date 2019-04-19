@@ -155,12 +155,12 @@ public class MenuController extends BaseController {
 		return "modules/sys/menuTree";
 	}
 
-	@RequiresPermissions("user")
-	@RequestMapping(value = "treeselect")
-	public String treeselect(String parentId, Model model) {
-		model.addAttribute("parentId", parentId);
-		return "modules/sys/menuTreeselect";
-	}
+//	@RequiresPermissions("user")
+//	@RequestMapping(value = "treeselect")
+//	public String treeselect(String parentId, Model model) {
+//		model.addAttribute("parentId", parentId);
+//		return "modules/sys/menuTreeselect";
+//	}
 
 	@RequiresPermissions("user")
 	@RequestMapping(value = "iconselect")

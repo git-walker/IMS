@@ -13,14 +13,12 @@
 			<label class="control-label col-xs-12 col-sm-2 no-padding" for="enname">英文名称:</label>
 			<div class="col-xs-12 col-sm-10">
 				<form:input id="enname" path="enname" htmlEscape="false" maxlength="255" class="form-control width-100" placeholder="请输入英文名称"/>
-				<span class="help-inline"> 工作流用户组标识</span>
+				<span class="help-inline"> 用户组标识</span>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-xs-12 col-sm-2 no-padding" for="office.name">归属机构:</label>
 			<div class="col-xs-12 col-sm-10">
-				<%-- <sys:treeselect id="office" name="office.id" value="${role.office.id}" labelName="office.name" labelValue="${role.office.name}"
-					title="机构" url="/sys/office/treeData" cssClass="required"/> --%>
 				<div class="clearfix check-out input-group">
 					<input readonly="" type="text" id="office.name" name="office.name" value="${role.office.name}" class="form-control"/>
 					<span class="input-group-btn">
@@ -35,17 +33,14 @@
 		</div>
 		<div class="form-group">
 			<label class="control-label col-xs-12 col-sm-2 no-padding" for="roleType">角色类型:</label>
-			<div class="col-xs-12 col-sm-10"><%--
-				<form:input path="roleType" htmlEscape="false" maxlength="50" class="required"/>
-				<span class="help-inline" title="activiti有3种预定义的组类型：security-role、assignment、user 如果使用Activiti Explorer，需要security-role才能看到manage页签，需要assignment才能claim任务">
-					工作流组用户组类型（security-role：管理员、assignment：可进行任务分配、user：普通用户）</span> --%>
+			<div class="col-xs-12 col-sm-10">
 				<form:select path="roleType" class="select2 width-100" data-placeholder="点击选择...">
 					<form:option value="assignment">任务分配</form:option>
 					<form:option value="security-role">管理角色</form:option>
 					<form:option value="user">普通角色</form:option>
 				</form:select>
-				<span class="help-inline" title="activiti有3种预定义的组类型：security-role、assignment、user 如果使用Activiti Explorer，需要security-role才能看到manage页签，需要assignment才能claim任务">
-					工作流组用户组类型（任务分配：assignment、管理角色：security-role、普通角色：user）</span>
+				<span class="help-inline">
+					用户组类型（任务分配：assignment、管理角色：security-role、普通角色：user）</span>
 			</div>
 		</div>
 		<%-- <div class="form-group">
@@ -86,7 +81,6 @@
 				<form:select path="dataScope" class="select2 width-100" data-placeholder="点击选择...">
 					<form:options items="${fns:getDictList('sys_data_scope')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
-				<!-- <span class="help-inline">特殊情况下，设置为“按明细设置”，可进行跨机构授权</span> -->
 			</div>
 		</div>
 		<div class="form-group">

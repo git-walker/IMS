@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.stock.dao.StockDao">
+
+    <select id="selectStockList" resultType="cn.rootyu.ims.stock.entity.Stock">
+         select a.id,
+        a.goods_id goodsId,
+        b.name goodsName,
+        a.repo_id repoId,
+        c.name repoName,
+        a.count,
+        a.remarks,
+        a.create_by,
+        a.create_date,
+        a.update_by,
+        a.update_date,
+        a.del_flag
+        from ims_stock a
+        left join ims_goods b on a.goods_id = b.id
+        left join ims_repo c on a.repo_id = c.id
+        where a.del_flag='0'
+        <if test="repoId!=null and repoId!=''">
+            and a.repo_id = #{repoId}
+        </if>
+        <if test="goodsName!=null and goodsName!=''">
+            and b.name like CONCAT('%', #{goodsName}, '%')
+        </if>
+        order by b.name,a.count
+    </select>
+
+    <select id="selectStockListByRepoId" resultType="cn.rootyu.ims.stock.entity.Stock">
+         select a.id,
+        a.goods_id goodsId,
+        a.repo_id repoId,
+        a.count,
+        a.remarks,
+        a.create_by,
+        a.create_date,
+        a.update_by,
+        a.update_date,
+        a.del_flag
+        from ims_stock a
+        where repo_id =#{repoId}
+        and a.del_flag='0'
+    </select>
+
+    <select id="getGoodsStock" resultType="cn.rootyu.ims.stock.entity.Stock">
+        select a.id,
+        a.goods_id goodsId,
+        a.repo_id repoId,
+        a.count,
+        a.remarks,
+        a.create_by,
+        a.create_date,
+        a.update_by,
+        a.update_date,
+        a.del_flag
+        from ims_stock a
+        where a.repo_id =#{repoId}
+        and a.goods_id=#{goodsId}
+        and a.del_flag='0'
+    </select>
+
+    <insert id="addStock">
+        insert into  ims_stock(id,goods_id,repo_id,count,remarks,create_date,create_by,update_date,update_by,del_flag)
+        values (
+        #{id},
+        #{goodsId},
+        #{repoId},
+        #{count},
+        #{remarks},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{createBy.id},
+		#{updateDate,jdbcType=TIMESTAMP},
+		#{updateBy.id},
+		#{delFlag}
+        );
+    </insert>
+    <update id="updateStock">
+        update ims_stock
+        set update_date=#{updateDate,jdbcType=TIMESTAMP},
+		update_by=#{updateBy.id},
+		count=#{count}
+		where repo_id=#{repoId}
+		and goods_id=#{goodsId}
+		and id=#{id}
+    </update>
+</mapper>

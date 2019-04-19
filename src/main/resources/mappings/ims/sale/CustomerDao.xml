@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.sale.dao.CustomerDao">
+    <select id="selectCustomerList" resultType="cn.rootyu.ims.sale.entity.Customer">
+        select a.ID,
+        a.NAME customerName,
+        a.LINKMAN linkMan,
+        a.PHONE,
+        a.ADDRESS,
+        a.REMARKS,
+        a.CREATE_BY,
+        a.CREATE_DATE,
+        a.UPDATE_BY,
+        a.UPDATE_DATE,
+        a.DEL_FLAG
+        from IMS_CUSTOMER a
+        where a.del_flag='0'
+        <if test="id!=null and id!=''">
+            and a.id =#{id}
+        </if>
+        <if test="customerName!=null and customerName!=''">
+            and a.NAME like CONCAT('%', #{customerName}, '%')
+        </if>
+        order by a.create_date desc
+    </select>
+
+    <insert id="addCustomer">
+		insert into IMS_CUSTOMER(ID,NAME,LINKMAN,PHONE,ADDRESS,CREATE_BY,CREATE_DATE,UPDATE_BY,UPDATE_DATE,REMARKS,DEL_FLAG)
+		values(
+		#{id},
+		#{customerName},
+		#{linkMan},
+		#{phone},
+		#{address},
+		#{createBy.id},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{updateBy.id},
+		#{updateDate,jdbcType=TIMESTAMP},
+		#{remarks},
+		#{delFlag}
+		)
+	</insert>
+
+    <update id="updateCustomer">
+        update IMS_CUSTOMER
+        <set>
+            update_by=#{updateBy.id},
+            update_date=#{updateDate,jdbcType=TIMESTAMP},
+            <if test="customerName!=null">
+                NAME=#{customerName},
+            </if>
+            <if test="linkMan!=null">
+                LINKMAN=#{linkMan},
+            </if>
+            <if test="phone!=null">
+                PHONE=#{phone},
+            </if>
+            <if test="address!=null">
+                ADDRESS=#{address},
+            </if>
+            <if test="remarks!=null">
+                REMARKS=#{remarks},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <update id="removeCustomers">
+        update IMS_CUSTOMER
+        set del_flag='1'
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getAllCustomer" resultType="cn.rootyu.ims.sale.entity.Customer">
+    select a.ID,
+    a.NAME customerName
+    from IMS_CUSTOMER a
+    where a.del_flag='0'
+    order by a.create_date desc
+    </select>
+</mapper>

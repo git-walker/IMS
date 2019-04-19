@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rootyu.ims.dataManage.dao.StockInfoDao">
+    <select id="queryStockInfo" resultType="cn.rootyu.ims.dataManage.entity.StockInfo">
+        select b.name goodsName,
+        count
+        from ims_stock a
+        left join ims_goods b on a.goods_id = b.id
+        where a.del_flag='0'
+        and a.repo_id=#{repoId}
+    </select>
+</mapper>
