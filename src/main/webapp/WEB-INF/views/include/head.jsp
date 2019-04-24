@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %><meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><meta name="author" content="StupidYu"/>
 <meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<link rel="icon" href="data:image/ico;base64,aWNv">
 <!--[if !IE]> -->
 <link rel="stylesheet" href="${ctxStatic}/assets/css/pace.css" />
 <script data-pace-options='{ "ajax": true, "document": true, "eventLag": false, "elements": false }' src="${ctxStatic}/assets/js/pace.js"></script>

@@ -279,8 +279,8 @@
 				
 				e.preventDefault();
 			 });
-			
-		
+
+
 			$("#loginForm").validate({
 				messages: {
 					username: {required: "请填写用户名."},password: {required: "请填写密码."}
@@ -290,7 +290,7 @@
 					error.appendTo($("#messageBox"));
 					$('#message-icon').removeClass('green');
 					$('#message-icon').addClass('red');
-				} 
+				}
 			});
 			$('#submitLogin').click(function(){
 				$("#loginForm").submit();
@@ -299,7 +299,7 @@
     			if (event.keyCode == "13") {//keyCode=13是回车键
         		$("#loginForm").submit();
 			    }
-			});    
+			});
 		});
 		// 如果在框架或在对话框中，则弹出提示并跳转到首页
 		if(self.frameElement && self.frameElement.tagName == "IFRAME" || $('#left').length > 0 || $('.jbox').length > 0){

@@ -14,7 +14,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">订单编号</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="orderCode" name="orderCode" lay-verify="required" autocomplete="off" placeholder="请输入订单编号" class="layui-input">
+                    <input type="text" id="orderCode" name="orderCode" value="<%=System.currentTimeMillis()%>" lay-verify="required" autocomplete="off" class="layui-input" disabled>
                 </div>
             </div>
             <div class="layui-inline">

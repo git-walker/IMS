@@ -259,19 +259,6 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	<!-- 如果菜单是审核管理,对策书接口 ,售后故障对策书则需要查询出对应的角色-->
-	<select id="findMenuListByUser" resultType="Menu">
-		select * from sys_menu t1 where t1.id in
-		(select t2.menu_id from sys_role_menu t2
-			where t2.role_id in (
-			select t3.role_id from sys_user_role t3
-			where  t3.user_id = #{id}
-			)
-		)
-		and t1. task_flag = '1'
-		and t1.del_flag = '0'
-		order by t1.sort
-	</select>
 	
 	<update id="updateNoPwdUser" parameterType="String">
 		update sys_user t

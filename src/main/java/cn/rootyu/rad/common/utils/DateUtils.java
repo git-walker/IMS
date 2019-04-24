@@ -29,6 +29,16 @@ public class DateUtils {
 	}
 
 	/**
+	 * 获取过去的天数
+	 * @param date
+	 * @return
+	 */
+	public static long pastDays(Date date) {
+		long t = new Date().getTime()-date.getTime();
+		return t/(24*60*60*1000);
+	}
+
+	/**
 	 * 获取过去的分钟
 	 */
 	public static long pastMinutes(Date date) {

@@ -39,11 +39,11 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "${adminPath}/login", method = RequestMethod.GET)
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		SystemAuthorizingRealm.Principal principal = UserUtils.getPrincipal();
-		
+
 		if (logger.isDebugEnabled()){
 			logger.debug("login, active session size: {}", sessionDAO.getActiveSessions(false).size());
 		}
-		
+
 		// 如果已登录，再次访问主页，则退出原账号。
 		if (Global.TRUE.equals(Global.getConfig("notAllowRefreshIndex"))){
 			CookieUtils.setCookie(response, "LOGINED", "false");
@@ -58,7 +58,7 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "${adminPath}/login", method = RequestMethod.POST)
 	public String loginFail(HttpServletRequest request, HttpServletResponse response, Model model) {
 		SystemAuthorizingRealm.Principal principal = UserUtils.getPrincipal();
-		
+
 		// 如果已经登录，则跳转到管理首页
 		if(principal != null){
 			return "redirect:" + adminPath;
@@ -109,7 +109,7 @@ public class LoginController extends BaseController {
 		}
 		return "modules/sys/sysIndex";
 	}
-	
+
 	/**
 	 * 获取主题方案
 	 */

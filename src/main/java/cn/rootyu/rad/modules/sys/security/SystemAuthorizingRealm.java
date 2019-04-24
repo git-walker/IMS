@@ -54,8 +54,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			logger.debug("login submit, active session size: {}, username: {}", activeSessionSize, token.getUsername());
 		}
 
-		// 校验用户名密码
+		// 根据登录名获取用户信息
 		User user = getSystemService().getUserByLoginName(token.getUsername());
+		// 校验用户名密码
 		if (user != null) {
 			if (Global.NO.equals(user.getLoginFlag())){
 				throw new AuthenticationException("msg:该已帐号禁止登录.");

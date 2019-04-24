@@ -51,7 +51,16 @@
 		<property name="sessionManager" ref="sessionManager" />
 		<property name="cacheManager" ref="shiroCacheManager" />
 	</bean>
-	
+
+	<!--<bean id="systemAuthorizingRealm" class="cn.rootyu.rad.modules.sys.security.SystemAuthorizingRealm">-->
+        <!--<property name="credentialsMatcher">-->
+            <!--<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
+                <!--<property name="hashAlgorithmName" value="SHA-1"></property>-->
+                <!--<property name="hashIterations" value="1024"></property>-->
+            <!--</bean>-->
+        <!--</property>-->
+	<!--</bean>-->
+
 	<!-- 自定义会话管理配置 -->
 	<bean id="sessionManager" class="cn.rootyu.rad.common.security.shiro.session.SessionManager">
 		<property name="sessionDAO" ref="sessionDAO"/>

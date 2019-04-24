@@ -49,6 +49,12 @@ public class Global {
 	public static final String FALSE = "false";
 
 	/**
+	 * 成功/失败
+	 */
+	public static final String SUCCESS = "1";
+	public static final String ERROR = "0";
+
+	/**
 	 * 上传文件基础虚拟路径
 	 */
 	public static final String USERFILES_BASE_URL = "/userfiles/";
@@ -78,6 +84,13 @@ public class Global {
 	 */
 	public static String getAdminPath() {
 		return getConfig("adminPath");
+	}
+
+	/**
+	 * 获取前端根路径
+	 */
+	public static String getFrontPath() {
+		return getConfig("frontPath");
 	}
 
 	/**

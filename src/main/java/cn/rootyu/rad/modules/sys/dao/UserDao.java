@@ -2,7 +2,6 @@ package cn.rootyu.rad.modules.sys.dao;
 
 import cn.rootyu.rad.common.dao.CrudDao;
 import cn.rootyu.rad.common.dao.annotation.MyBatisDao;
-import cn.rootyu.rad.modules.sys.entity.Menu;
 import cn.rootyu.rad.modules.sys.entity.User;
 
 import java.util.List;
@@ -69,14 +68,6 @@ public interface UserDao extends CrudDao<User> {
 	 * @return
 	 */
 	int updateUserInfo(User user);
-
-	
-	/**
-	 * 根据用户Id查询用户所有可显示的任务
-	 * @param id
-	 * @return
-	 */
-	List<Menu> findMenuListByUser(String id);
 
 
 	/**

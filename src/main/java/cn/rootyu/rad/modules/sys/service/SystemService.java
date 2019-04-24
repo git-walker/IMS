@@ -328,18 +328,6 @@ public class SystemService extends BaseService {
 
     // ========Menu Service ========
 
-    /**
-     * 根据用户id查询所有显示的任务
-     * @param id
-     * @return
-     */
-    public List<Menu> getMenuListByUser(String id){
-
-        List<Menu> menuList = userDao.findMenuListByUser(id);
-
-        return menuList;
-    }
-
     public Menu getMenu(String id) {
         return menuDao.get(id);
     }
